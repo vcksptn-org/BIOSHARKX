@@ -9,10 +9,10 @@
       margin: 0;
       padding: 0;
       height: 100%;
-      background: black;
       overflow: hidden;
+      background: black;
       font-family: "Courier New", monospace;
-      color: #00ffff;
+      color: #00ff00;
     }
 
     canvas {
@@ -24,113 +24,218 @@
       z-index: 0;
     }
 
-    #typingBox {
-      position: fixed;
-      bottom: 20px;
-      left: 30px;
-      color: #00ffff;
-      background: rgba(0, 0, 0, 0.5);
-      border-left: 2px solid #00ffff;
-      padding: 10px 15px;
-      font-size: 15px;
-      line-height: 1.4em;
-      white-space: pre-wrap;
-      overflow: hidden;
+    /* Tombol ON */
+    .center {
+      position: absolute;
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -50%);
       z-index: 2;
-      width: 420px;
-      box-shadow: 0 0 10px #00ffff;
     }
 
-    .cursor {
-      display: inline-block;
-      width: 10px;
-      background: #00ffff;
-      margin-left: 2px;
-      animation: blink 1s infinite;
+    #onButton {
+      width: 70px;
+      height: 70px;
+      border-radius: 50%;
+      border: 2px solid #00ff00;
+      background: black;
+      color: #00ff00;
+      font-size: 18px;
+      letter-spacing: 2px;
+      cursor: pointer;
+      box-shadow: 0 0 15px #00ff00;
+      transition: all 0.4s ease;
+      text-shadow: 0 0 8px #00ff00;
+      animation: pulse 1.8s infinite;
     }
 
-    @keyframes blink {
-      0%, 50% { opacity: 1; }
-      51%, 100% { opacity: 0; }
+    #onButton:hover {
+      background: #00ff00;
+      color: black;
+      box-shadow: 0 0 25px #00ff00;
+    }
+
+    @keyframes pulse {
+      0% { box-shadow: 0 0 10px #00ff00; transform: scale(1); }
+      50% { box-shadow: 0 0 25px #00ff00; transform: scale(1.05); }
+      100% { box-shadow: 0 0 10px #00ff00; transform: scale(1); }
+    }
+
+    /* Kotak terminal */
+    #terminal {
+      display: none;
+      position: absolute;
+      top: 40px;
+      left: 50%;
+      transform: translateX(-50%) scale(0.9);
+      width: 70%;
+      max-width: 480px;
+      border: 2px solid #00ff00;
+      padding: 10px 15px;
+      background-color: rgba(0, 0, 0, 0.75);
+      box-shadow: 0 0 12px #00ff00;
+      z-index: 2;
+      line-height: 1.4em;
+      font-size: 14px;
+      opacity: 0;
+      transition: all 1.2s ease;
+    }
+
+    #terminal.show {
+      opacity: 1;
+      transform: translateX(-50%) scale(1);
+      animation: terminalPulse 2s infinite;
+    }
+
+    @keyframes terminalPulse {
+      0% { box-shadow: 0 0 10px #00ff00; }
+      50% { box-shadow: 0 0 20px #00ff00; }
+      100% { box-shadow: 0 0 10px #00ff00; }
+    }
+
+    .yellow {
+      color: #ffff66;
     }
   </style>
 </head>
 <body>
   <canvas id="matrix"></canvas>
-  <div id="typingBox"></div>
+
+  <div class="center">
+    <button id="onButton">ON</button>
+  </div>
+
+  <div id="terminal">
+    &gt; Initializing access...<br>
+    &gt; System status: OK<br>
+    &gt; Loading user environment...<br>
+    &gt; Access granted.<br>
+    &gt; Hello, <span class="yellow">Operator</span>. Welcome back.
+  </div>
+
+  <audio id="music" src="boot.mp3" loop></audio>
 
   <script>
-    // === Efek Hujan Matrix ===
+    // Efek hujan Matrix
     const canvas = document.getElementById("matrix");
     const ctx = canvas.getContext("2d");
+
     canvas.height = window.innerHeight;
     canvas.width = window.innerWidth;
 
-    const chars = "アァカサタナハマヤャラワガザダバパABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789";
+    const chars = "アァカサタナハマヤャラワガザダバパイィキシチニヒミリヰギジヂビピウゥクスツヌフムユュルグズヅブプエェケセテネヘメレヱゲゼデベペオォコソトノホモヨョロゴゾドボポヴッンABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789";
     const fontSize = 16;
     const columns = canvas.width / fontSize;
     const drops = [];
 
     for (let x = 0; x < columns; x++) drops[x] = 1;
 
-    function drawMatrix() {
+    function draw() {
       ctx.fillStyle = "rgba(0, 0, 0, 0.05)";
       ctx.fillRect(0, 0, canvas.width, canvas.height);
+
       ctx.fillStyle = "#00ff00";
       ctx.font = fontSize + "px monospace";
 
       for (let i = 0; i < drops.length; i++) {
         const text = chars.charAt(Math.floor(Math.random() * chars.length));
         ctx.fillText(text, i * fontSize, drops[i] * fontSize);
-        if (drops[i] * fontSize > canvas.height && Math.random() > 0.975) drops[i] = 0;
+
+        if (drops[i] * fontSize > canvas.height && Math.random() > 0.975)
+          drops[i] = 0;
         drops[i]++;
       }
     }
 
-    setInterval(drawMatrix, 33);
+    setInterval(draw, 33);
+
+    // Tombol ON
+    const btn = document.getElementById("onButton");
+    const terminal = document.getElementById("terminal");
+    const music = document.getElementById("music");
+
+    btn.addEventListener("click", () => {
+      music.play().catch(() => console.log("Autoplay blocked"));
+      btn.style.opacity = 0;
+      setTimeout(() => btn.style.display = "none", 800);
+      setTimeout(() => {
+        terminal.style.display = "block";
+        setTimeout(() => terminal.classList.add("show"), 50);
+      }, 1000);
+    });
 
     window.addEventListener("resize", () => {
       canvas.height = window.innerHeight;
       canvas.width = window.innerWidth;
     });
+  </script>
+</body>
+</html>
 
-    // === Efek Mengetik Terminal di Kiri Bawah ===
-    const lines = [
-      "> Initializing VCKSPTN Protocol...",
-      "> Establishing secure connection...",
-      "> Loading AI Core Systems...",
-      "> System Online.",
-      "> Hello, Operator. Welcome Back."
+  <!-- Animasi Mengetik -->
+  <div id="typingContainer">
+    <pre id="typingText"></pre>
+  </div>
+
+  <script>
+    const typingContainer = document.getElementById("typingContainer");
+    const typingText = document.getElementById("typingText");
+
+    const codeLines = [
+      "function connectSystem() {",
+      "    const link = secureConnect('VCKSPTN_MAIN');",
+      "    link.status = 'active';",
+      "    console.log('System linked successfully.');",
+      "}",
+      "",
+      "connectSystem();"
     ];
 
-    const typingBox = document.getElementById("typingBox");
-    let lineIndex = 0, charIndex = 0;
+    let line = 0, char = 0;
+    let isTyping = false;
 
-    function typeLine() {
-      if (lineIndex < lines.length) {
-        if (charIndex < lines[lineIndex].length) {
-          typingBox.innerHTML = lines
-            .slice(0, lineIndex)
-            .join("\n") + "\n" + lines[lineIndex].substring(0, charIndex) + '<span class="cursor"></span>';
-          charIndex++;
-          setTimeout(typeLine, 60);
+    typingContainer.style.position = "absolute";
+    typingContainer.style.bottom = "30px";
+    typingContainer.style.left = "30px";
+    typingContainer.style.zIndex = "2";
+    typingContainer.style.fontFamily = "'Courier New', monospace";
+    typingContainer.style.fontSize = "10px";
+    typingContainer.style.color = "#00ff00";
+    typingContainer.style.textShadow = "0 0 6px #00ff00";
+    typingContainer.style.display = "none";
+
+    function typeEffect() {
+      if (line < codeLines.length) {
+        if (char < codeLines[line].length) {
+          typingText.textContent += codeLines[line][char];
+          char++;
+          setTimeout(typeEffect, 35); // kecepatan ketik 2x lebih cepat
         } else {
-          charIndex = 0;
-          lineIndex++;
-          setTimeout(typeLine, 700);
+          typingText.textContent += "\n";
+          line++;
+          char = 0;
+          setTimeout(typeEffect, 150);
         }
       } else {
-        typingBox.innerHTML = lines.join("\n") + '<span class="cursor"></span>';
+        // Ulang setiap 2 menit
         setTimeout(() => {
-          lineIndex = 0;
-          charIndex = 0;
-          typingBox.innerHTML = "";
-          typeLine();
-        }, 120000); // Ulang setiap 2 menit
+          typingText.textContent = "";
+          line = 0;
+          char = 0;
+          typeEffect();
+        }, 120000);
       }
     }
 
-    typeLine();
+    btn.addEventListener("click", () => {
+      setTimeout(() => {
+        typingContainer.style.display = "block";
+        if (!isTyping) {
+          isTyping = true;
+          typeEffect();
+        }
+      }, 2500);
+    });
   </script>
 </body>
 </html>
