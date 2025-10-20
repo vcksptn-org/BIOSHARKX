@@ -26,7 +26,7 @@
       width: 100%;
       height: 100%;
       z-index: 0;
-      display: none;
+      display: block;
     }
 
     .button {
@@ -49,89 +49,77 @@
       transform: scale(1.05);
     }
 
-    #welcome {
+    #mainContent {
       display: none;
-      font-size: 36px;
-      color: limegreen;
-      opacity: 0;
       z-index: 1;
-      animation: fadeInOut 3s forwards;
-    }
-
-    @keyframes fadeInOut {
-      0% { opacity: 0; transform: scale(0.9); }
-      20% { opacity: 1; transform: scale(1); }
-      80% { opacity: 1; transform: scale(1); }
-      100% { opacity: 0; transform: scale(0.9); }
+      color: limegreen;
+      font-size: 36px;
     }
   </style>
 </head>
 <body>
   <canvas id="matrix"></canvas>
   <button class="button" id="powerButton">ON</button>
-  <h1 id="welcome">Welcome</h1>
+  <div id="mainContent">Welcome to the Main Page</div>
 
-  <audio id="music" src="boot.mp3"></audio>
+  <audio id="music" src="boot.mp3" autoplay loop></audio>
 
   <script>
     const button = document.getElementById('powerButton');
-    const welcome = document.getElementById('welcome');
-    const music = document.getElementById('music');
     const canvas = document.getElementById('matrix');
     const ctx = canvas.getContext('2d');
+    const mainContent = document.getElementById('mainContent');
 
-    let isActive = false;
-    let matrixInterval;
+    // Atur ukuran canvas
+    canvas.width = window.innerWidth;
+    canvas.height = window.innerHeight;
 
-    // Fungsi untuk mulai efek hujan Matrix
-    function startMatrixRain() {
-      canvas.style.display = 'block';
-      canvas.width = window.innerWidth;
-      canvas.height = window.innerHeight;
+    // Musik mulai otomatis
+    const music = document.getElementById('music');
+    music.volume = 0.6;
+    music.play().catch(() => {
+      // Browser kadang blokir autoplay, diabaikan
+    });
 
-      const letters = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789';
-      const fontSize = 16;
-      const columns = canvas.width / fontSize;
-      const drops = Array(Math.floor(columns)).fill(1);
+    // Efek hujan matrix langsung aktif
+    const letters = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789';
+    const fontSize = 16;
+    const columns = canvas.width / fontSize;
+    const drops = Array(Math.floor(columns)).fill(1);
 
-      function draw() {
-        ctx.fillStyle = 'rgba(0, 0, 0, 0.05)';
-        ctx.fillRect(0, 0, canvas.width, canvas.height);
-        ctx.fillStyle = '#0F0';
-        ctx.font = fontSize + 'px monospace';
-        for (let i = 0; i < drops.length; i++) {
-          const text = letters.charAt(Math.floor(Math.random() * letters.length));
-          ctx.fillText(text, i * fontSize, drops[i] * fontSize);
-          if (drops[i] * fontSize > canvas.height && Math.random() > 0.975) {
-            drops[i] = 0;
-          }
-          drops[i]++;
+    function drawMatrix() {
+      ctx.fillStyle = 'rgba(0, 0, 0, 0.05)';
+      ctx.fillRect(0, 0, canvas.width, canvas.height);
+      ctx.fillStyle = '#0F0';
+      ctx.font = fontSize + 'px monospace';
+
+      for (let i = 0; i < drops.length; i++) {
+        const text = letters.charAt(Math.floor(Math.random() * letters.length));
+        ctx.fillText(text, i * fontSize, drops[i] * fontSize);
+
+        if (drops[i] * fontSize > canvas.height && Math.random() > 0.975) {
+          drops[i] = 0;
         }
+        drops[i]++;
       }
-
-      matrixInterval = setInterval(draw, 33);
     }
 
+    setInterval(drawMatrix, 33);
+
+    // Saat tombol diklik
     button.addEventListener('click', () => {
-      if (!isActive) {
-        music.play();
+      button.style.opacity = '0';
+      button.style.transform = 'scale(0.8)';
+      setTimeout(() => {
+        button.style.display = 'none';
+        mainContent.style.display = 'block';
+      }, 400);
+    });
 
-        // Hilangkan tombol
-        button.style.opacity = '0';
-        button.style.transform = 'scale(0.8)';
-        setTimeout(() => {
-          button.style.display = 'none';
-          welcome.style.display = 'block';
-
-          // Setelah 3 detik, hilangkan welcome dan mulai matrix
-          setTimeout(() => {
-            welcome.style.display = 'none';
-            startMatrixRain();
-          }, 3000);
-        }, 400);
-
-        isActive = true;
-      }
+    // Resize canvas saat layar berubah
+    window.addEventListener('resize', () => {
+      canvas.width = window.innerWidth;
+      canvas.height = window.innerHeight;
     });
   </script>
 </body>
