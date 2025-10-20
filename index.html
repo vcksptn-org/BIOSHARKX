@@ -61,14 +61,14 @@
       100% { box-shadow: 0 0 10px #00ff00; transform: scale(1); }
     }
 
-    /* Kotak terminal (dipindah ke pojok kanan bawah dan diperkecil) */
+    /* Kotak terminal (pojok kanan bawah dan diperkecil setengah ukuran) */
 #terminal {
   display: none;
   position: absolute;
-  bottom: 10px;    /* lebih mepet ke bawah */
-  right: 10px;     /* lebih mepet ke kanan */
-  transform: scale(0.5); /* setengah ukuran asli */
-  transform-origin: bottom right; /* supaya skala dari pojok kanan bawah */
+  bottom: 10px;          /* lebih mepet ke bawah */
+  right: 10px;           /* lebih mepet ke kanan */
+  transform: scale(0.5); /* ukuran setengah dari semula */
+  transform-origin: bottom right; /* mengecil dari pojok kanan bawah */
   width: 70%;
   max-width: 480px;
   border: 2px solid #00ff00;
@@ -80,6 +80,12 @@
   font-size: 14px;
   opacity: 0;
   transition: all 1.2s ease;
+}
+
+#terminal.show {
+  opacity: 1;
+  transform: scale(0.5);
+  animation: terminalPulse 2s infinite;
 }
 
 /* Saat muncul */
