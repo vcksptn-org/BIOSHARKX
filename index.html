@@ -3,20 +3,16 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>System Boot</title>
+  <title>VCKSPTN SYSTEM</title>
   <style>
-    body {
+    html, body {
       margin: 0;
       padding: 0;
+      height: 100%;
       overflow: hidden;
-      background-color: black;
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-      justify-content: center;
-      height: 100vh;
-      font-family: monospace;
-      color: limegreen;
+      background: black;
+      font-family: "Courier New", monospace;
+      color: #00ff00;
     }
 
     canvas {
@@ -26,108 +22,124 @@
       width: 100%;
       height: 100%;
       z-index: 0;
-      display: block;
     }
 
-    .button {
-      width: 120px;
-      height: 120px;
-      border-radius: 50%;
-      border: 2px solid limegreen;
-      background-color: black;
-      color: limegreen;
-      font-size: 22px;
-      font-weight: bold;
-      cursor: pointer;
-      box-shadow: 0 0 20px limegreen;
-      transition: all 0.4s ease;
-      z-index: 1;
-    }
-
-    .button:hover {
-      box-shadow: 0 0 35px limegreen;
-      transform: scale(1.05);
-    }
-
-    #title {
+    .center {
       position: absolute;
-      top: 40px;
-      font-size: 32px;
-      font-weight: bold;
-      color: limegreen;
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -50%);
       text-align: center;
-      z-index: 1;
-      opacity: 0;
-      transform: scale(0.9);
-      transition: all 1.5s ease;
+      z-index: 2;
+    }
+
+    #onButton {
+      background: transparent;
+      border: 2px solid #00ff00;
+      color: #00ff00;
+      font-size: 24px;
+      padding: 10px 40px;
+      cursor: pointer;
+      transition: all 0.5s ease;
+      text-shadow: 0 0 10px #00ff00;
+    }
+
+    #onButton:hover {
+      background: #00ff00;
+      color: black;
+      box-shadow: 0 0 20px #00ff00;
+    }
+
+    #terminal {
+      display: none;
+      position: absolute;
+      top: 50px;
+      left: 50%;
+      transform: translateX(-50%);
+      width: 80%;
+      max-width: 600px;
+      border: 2px solid #00ff00;
+      padding: 15px 20px;
+      background-color: rgba(0, 0, 0, 0.7);
+      box-shadow: 0 0 15px #00ff00;
+      z-index: 2;
+      line-height: 1.5em;
+      font-size: 16px;
+    }
+
+    .yellow {
+      color: #ffff66;
     }
   </style>
 </head>
 <body>
   <canvas id="matrix"></canvas>
 
-  <h1 id="title">WELCOME TO SYSTEM</h1>
-  <button class="button" id="powerButton">ON</button>
+  <div class="center">
+    <button id="onButton">ON</button>
+  </div>
 
-  <audio id="music" src="boot.mp3"></audio>
+  <div id="terminal">
+    &gt; Initializing access...<br>
+    &gt; System status: OK<br>
+    &gt; Loading user environment...<br>
+    &gt; Access granted.<br>
+    &gt; Hello, <span class="yellow">Operator</span>. Welcome back.
+  </div>
+
+  <audio id="music" src="boot.mp3" loop></audio>
 
   <script>
-    // MATRIX RAIN
-    const canvas = document.getElementById('matrix');
-    const ctx = canvas.getContext('2d');
-    canvas.width = window.innerWidth;
-    canvas.height = window.innerHeight;
+    // Efek hujan Matrix
+    const canvas = document.getElementById("matrix");
+    const ctx = canvas.getContext("2d");
 
-    const letters = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789';
+    canvas.height = window.innerHeight;
+    canvas.width = window.innerWidth;
+
+    const chars = "アァカサタナハマヤャラワガザダバパイィキシチニヒミリヰギジヂビピウゥクスツヌフムユュルグズヅブプエェケセテネヘメレヱゲゼデベペオォコソトノホモヨョロゴゾドボポヴッンABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789";
     const fontSize = 16;
     const columns = canvas.width / fontSize;
-    const drops = Array(Math.floor(columns)).fill(1);
+    const drops = [];
 
-    function drawMatrix() {
-      ctx.fillStyle = 'rgba(0, 0, 0, 0.05)';
+    for (let x = 0; x < columns; x++) drops[x] = 1;
+
+    function draw() {
+      ctx.fillStyle = "rgba(0, 0, 0, 0.05)";
       ctx.fillRect(0, 0, canvas.width, canvas.height);
-      ctx.fillStyle = '#0F0';
-      ctx.font = fontSize + 'px monospace';
+
+      ctx.fillStyle = "#00ff00";
+      ctx.font = fontSize + "px monospace";
 
       for (let i = 0; i < drops.length; i++) {
-        const text = letters.charAt(Math.floor(Math.random() * letters.length));
+        const text = chars.charAt(Math.floor(Math.random() * chars.length));
         ctx.fillText(text, i * fontSize, drops[i] * fontSize);
-        if (drops[i] * fontSize > canvas.height && Math.random() > 0.975) drops[i] = 0;
+
+        if (drops[i] * fontSize > canvas.height && Math.random() > 0.975)
+          drops[i] = 0;
         drops[i]++;
       }
     }
-    setInterval(drawMatrix, 33);
 
-    // POWER BUTTON
-    const button = document.getElementById('powerButton');
-    const music = document.getElementById('music');
-    const title = document.getElementById('title');
+    setInterval(draw, 33);
 
-    button.addEventListener('click', () => {
-      // mainkan musik
-      music.volume = 0.6;
-      music.play();
+    // Tombol ON
+    const btn = document.getElementById("onButton");
+    const terminal = document.getElementById("terminal");
+    const music = document.getElementById("music");
 
-      // animasi tombol hilang
-      button.style.opacity = '0';
-      button.style.transform = 'scale(0.8)';
-      setTimeout(() => button.style.display = 'none', 600);
-
-      // tampilkan teks
+    btn.addEventListener("click", () => {
+      music.play().catch(() => console.log("Autoplay blocked"));
+      btn.style.opacity = 0;
+      setTimeout(() => btn.style.display = "none", 1000);
       setTimeout(() => {
-        title.style.opacity = '1';
-        title.style.transform = 'scale(1)';
-      }, 700);
-
-      // pindah ke main.html setelah 4 detik
-      setTimeout(() => {
-        window.location.href = 'main.html';
-      }, 4000);
+        terminal.style.display = "block";
+      }, 1000);
     });
 
-    window.addEventListener('resize', () => {
-      canvas.width = window.innerWidth;
+    window.addEventListener("resize", () => {
       canvas.height = window.innerHeight;
+      canvas.width = window.innerWidth;
     });
   </script>
 </body>
