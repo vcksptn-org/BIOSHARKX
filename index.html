@@ -61,6 +61,81 @@
       100% { box-shadow: 0 0 10px #00ff00; transform: scale(1); }
     }
 
+
+  <!-- Animasi Mengetik -->
+  <div id="typingContainer">
+    <pre id="typingText"></pre>
+  </div>
+
+  <script>
+    const typingContainer = document.getElementById("typingContainer");
+    const typingText = document.getElementById("typingText");
+
+    // Baris teks animasi
+    const codeLines = [
+      "function initializeSequence() {",
+      "   let system = createConnection('VCKSPTN_CORE');",
+      "   system.loadModules(['AI_CORE', 'LINK_HANDLER']);",
+      "   system.activate();",
+      "   console.log('SYSTEM ONLINE...');",
+      "   verifyAccess('Operator');",
+      "   deployMainInterface();"
+    ];
+
+    // Atur posisi & tampilan
+    typingContainer.style.position = "absolute";
+    typingContainer.style.bottom = "10px";
+    typingContainer.style.left = "5px"; // lebih ke kiri
+    typingContainer.style.zIndex = "2";
+    typingContainer.style.fontFamily = "'Courier New', monospace";
+    typingContainer.style.fontSize = "7px";
+    typingContainer.style.color = "#ffffff";
+    typingContainer.style.textShadow = "0 0 6px #ffffff";
+    typingContainer.style.display = "none";
+    typingContainer.style.whiteSpace = "pre";
+
+    let line = 0, char = 0;
+    let isTyping = false;
+
+    function typeEffect() {
+      if (line < codeLines.length) {
+        if (char < codeLines[line].length) {
+          typingText.textContent += codeLines[line][char];
+          char++;
+          setTimeout(typeEffect, 15); // kecepatan mengetik
+        } else {
+          typingText.textContent += "\n"; // baris baru ke bawah
+          line++;
+          char = 0;
+          setTimeout(typeEffect, 100);
+        }
+      } else {
+        // Setelah selesai semua baris → ulang dari awal
+        setTimeout(() => {
+          typingText.textContent = "";
+          line = 0;
+          char = 0;
+          typeEffect();
+        }, 500);
+      }
+    }
+
+    // Jalankan setelah tombol ON ditekan
+    btn.addEventListener("click", () => {
+      setTimeout(() => {
+        typingContainer.style.display = "block";
+        if (!isTyping) {
+          isTyping = true;
+          typeEffect();
+        }
+      }, 2500);
+    });
+  </script>
+</body>
+</html>
+
+
+
     /* Kotak terminal */
     #terminal {
       display: none;
@@ -167,78 +242,6 @@
     window.addEventListener("resize", () => {
       canvas.height = window.innerHeight;
       canvas.width = window.innerWidth;
-    });
-  </script>
-</body>
-</html>
-
-  <!-- Animasi Mengetik -->
-  <div id="typingContainer">
-    <pre id="typingText"></pre>
-  </div>
-
-  <script>
-    const typingContainer = document.getElementById("typingContainer");
-    const typingText = document.getElementById("typingText");
-
-    // Baris teks animasi
-    const codeLines = [
-      "function initializeSequence() {",
-      "   let system = createConnection('VCKSPTN_CORE');",
-      "   system.loadModules(['AI_CORE', 'LINK_HANDLER']);",
-      "   system.activate();",
-      "   console.log('SYSTEM ONLINE...');",
-      "   verifyAccess('Operator');",
-      "   deployMainInterface();"
-    ];
-
-    // Atur posisi & tampilan
-    typingContainer.style.position = "absolute";
-    typingContainer.style.bottom = "10px";
-    typingContainer.style.left = "5px"; // lebih ke kiri
-    typingContainer.style.zIndex = "2";
-    typingContainer.style.fontFamily = "'Courier New', monospace";
-    typingContainer.style.fontSize = "7px";
-    typingContainer.style.color = "#ffffff";
-    typingContainer.style.textShadow = "0 0 6px #ffffff";
-    typingContainer.style.display = "none";
-    typingContainer.style.whiteSpace = "pre";
-
-    let line = 0, char = 0;
-    let isTyping = false;
-
-    function typeEffect() {
-      if (line < codeLines.length) {
-        if (char < codeLines[line].length) {
-          typingText.textContent += codeLines[line][char];
-          char++;
-          setTimeout(typeEffect, 15); // kecepatan mengetik
-        } else {
-          typingText.textContent += "\n"; // baris baru ke bawah
-          line++;
-          char = 0;
-          setTimeout(typeEffect, 100);
-        }
-      } else {
-        // Setelah selesai semua baris → ulang dari awal
-        setTimeout(() => {
-          typingText.textContent = "";
-          line = 0;
-          char = 0;
-          typeEffect();
-        }, 500);
-      }
-    }
-
-    // Jalankan setelah tombol ON ditekan
-    btn.addEventListener("click", () => {
-      setTimeout(() => {
-        typingContainer.style.display = "block";
-        if (!isTyping) {
-          isTyping = true;
-          typeEffect();
-        }
-      }, 2500);
     });
   </script>
 </body>
