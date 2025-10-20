@@ -19,35 +19,37 @@
     }
 
     .button {
-      width: 160px;
-      height: 160px;
+      width: 120px;
+      height: 120px;
       border-radius: 50%;
       border: 2px solid limegreen;
       background-color: black;
       color: limegreen;
-      font-size: 28px;
+      font-size: 22px;
       font-weight: bold;
       cursor: pointer;
-      box-shadow: 0 0 25px limegreen;
+      box-shadow: 0 0 20px limegreen;
       transition: all 0.4s ease;
     }
 
     .button:hover {
-      box-shadow: 0 0 40px limegreen;
+      box-shadow: 0 0 35px limegreen;
       transform: scale(1.05);
     }
 
     #welcome {
       display: none;
-      font-size: 40px;
+      font-size: 34px;
       opacity: 0;
       color: limegreen;
-      animation: fadeIn 2s forwards;
+      animation: fadeInOut 3s forwards;
     }
 
-    @keyframes fadeIn {
-      from { opacity: 0; transform: scale(0.9); }
-      to { opacity: 1; transform: scale(1); }
+    @keyframes fadeInOut {
+      0% { opacity: 0; transform: scale(0.9); }
+      20% { opacity: 1; transform: scale(1); }
+      80% { opacity: 1; transform: scale(1); }
+      100% { opacity: 0; transform: scale(0.9); }
     }
   </style>
 </head>
@@ -67,14 +69,22 @@
       if (!isActive) {
         // Mainkan musik
         music.play();
+
         // Hilangkan tombol
         button.style.opacity = '0';
         button.style.transform = 'scale(0.8)';
         setTimeout(() => {
           button.style.display = 'none';
-          // Tampilkan teks Welcome
+
+          // Tampilkan Welcome
           welcome.style.display = 'block';
+
+          // Setelah animasi selesai, sembunyikan teks
+          setTimeout(() => {
+            welcome.style.display = 'none';
+          }, 3000);
         }, 400);
+
         isActive = true;
       }
     });
