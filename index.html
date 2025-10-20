@@ -1,20 +1,22 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>VCKSPTN Start</title>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Matrix Power</title>
   <style>
     body {
       margin: 0;
+      padding: 0;
       overflow: hidden;
-      background: black;
+      background-color: black;
       display: flex;
       justify-content: center;
       align-items: center;
       height: 100vh;
-      color: #00ff00;
-      font-family: "Courier New", monospace;
+      flex-direction: column;
+      font-family: monospace;
+      color: limegreen;
     }
 
     canvas {
@@ -23,109 +25,109 @@
       left: 0;
       width: 100%;
       height: 100%;
+      display: none; /* <- disembunyikan dulu */
       z-index: 0;
     }
 
-    .button-container {
-      position: relative;
+    .button {
+      width: 120px;
+      height: 120px;
+      border-radius: 50%;
+      border: 2px solid limegreen;
+      background-color: black;
+      color: limegreen;
+      font-size: 22px;
+      font-weight: bold;
+      cursor: pointer;
+      box-shadow: 0 0 20px limegreen;
+      transition: all 0.4s ease;
       z-index: 2;
     }
 
-    button {
-      background: none;
-      border: 2px solid #00ff00;
-      color: #00ff00;
-      font-size: 18px;
-      border-radius: 50%;
-      width: 70px;
-      height: 70px;
-      cursor: pointer;
-      transition: all 0.3s ease;
-      text-shadow: 0 0 10px #00ff00;
+    .button:hover {
+      box-shadow: 0 0 35px limegreen;
+      transform: scale(1.05);
     }
 
-    button:hover {
-      background: #00ff00;
-      color: black;
-      box-shadow: 0 0 20px #00ff00;
-    }
-
-    .welcome {
-      position: absolute;
-      font-size: 24px;
-      text-shadow: 0 0 10px #00ff00;
+    #welcome {
+      display: none;
+      font-size: 36px;
+      color: limegreen;
       opacity: 0;
-      transition: opacity 0.5s ease;
-      z-index: 3;
+      z-index: 2;
+      animation: fadeInOut 3s forwards;
+    }
+
+    @keyframes fadeInOut {
+      0% { opacity: 0; transform: scale(0.9); }
+      20% { opacity: 1; transform: scale(1); }
+      80% { opacity: 1; transform: scale(1); }
+      100% { opacity: 0; transform: scale(0.9); }
     }
   </style>
 </head>
 <body>
   <canvas id="matrix"></canvas>
-  <div class="button-container">
-    <button id="onButton">ON</button>
-    <div class="welcome" id="welcomeText">WELCOME</div>
-  </div>
-
-  <!-- Musik -->
-  <audio id="bootSound" preload="auto">
-    <source src="matrix.mp3" type="audio/mpeg">
-  </audio>
+  <button class="button" id="powerButton">ON</button>
+  <h1 id="welcome">Welcome</h1>
+  <audio id="music" src="boot.mp3"></audio>
 
   <script>
-    // Matrix rain
-    const canvas = document.getElementById("matrix");
-    const ctx = canvas.getContext("2d");
-    canvas.height = window.innerHeight;
-    canvas.width = window.innerWidth;
+    const button = document.getElementById('powerButton');
+    const welcome = document.getElementById('welcome');
+    const music = document.getElementById('music');
+    const canvas = document.getElementById('matrix');
+    const ctx = canvas.getContext('2d');
 
-    const letters = "アァカサタナハマヤャラワン0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZ";
-    const fontSize = 14;
-    const columns = canvas.width / fontSize;
-    const drops = Array(Math.floor(columns)).fill(1);
+    let isActive = false;
 
-    function drawMatrix() {
-      ctx.fillStyle = "rgba(0, 0, 0, 0.05)";
-      ctx.fillRect(0, 0, canvas.width, canvas.height);
-      ctx.fillStyle = "#00ff00";
-      ctx.font = fontSize + "px monospace";
-      for (let i = 0; i < drops.length; i++) {
-        const text = letters.charAt(Math.floor(Math.random() * letters.length));
-        ctx.fillText(text, i * fontSize, drops[i] * fontSize);
-        if (drops[i] * fontSize > canvas.height && Math.random() > 0.975) drops[i] = 0;
-        drops[i]++;
-      }
-    }
-    setInterval(drawMatrix, 35);
-
-    // Tombol dan musik
-    const button = document.getElementById("onButton");
-    const welcomeText = document.getElementById("welcomeText");
-    const sound = document.getElementById("bootSound");
-
-    button.addEventListener("click", async () => {
-      button.style.display = "none";
-      welcomeText.style.opacity = "1";
-
-      // mainkan musik
-      try {
-        await sound.play();
-      } catch (err) {
-        console.warn("Musik gagal diputar:", err);
-      }
-
-      setTimeout(() => {
-        welcomeText.style.opacity = "0";
-      }, 1500);
-
-      setTimeout(() => {
-        window.location.href = "home.html";
-      }, 2000);
-    });
-
-    window.addEventListener("resize", () => {
-      canvas.height = window.innerHeight;
+    function startMatrixRain() {
+      canvas.style.display = 'block'; // baru muncul di sini
       canvas.width = window.innerWidth;
+      canvas.height = window.innerHeight;
+
+      const letters = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789';
+      const fontSize = 16;
+      const columns = Math.floor(canvas.width / fontSize);
+      const drops = Array(columns).fill(1);
+
+      function draw() {
+        ctx.fillStyle = 'rgba(0, 0, 0, 0.05)';
+        ctx.fillRect(0, 0, canvas.width, canvas.height);
+        ctx.fillStyle = '#0F0';
+        ctx.font = fontSize + 'px monospace';
+        for (let i = 0; i < drops.length; i++) {
+          const text = letters.charAt(Math.floor(Math.random() * letters.length));
+          ctx.fillText(text, i * fontSize, drops[i] * fontSize);
+          if (drops[i] * fontSize > canvas.height && Math.random() > 0.975) {
+            drops[i] = 0;
+          }
+          drops[i]++;
+        }
+      }
+
+      setInterval(draw, 33);
+    }
+
+    button.addEventListener('click', () => {
+      if (!isActive) {
+        music.play().catch(() => {}); // play musik
+        button.style.opacity = '0';
+        button.style.transform = 'scale(0.8)';
+
+        setTimeout(() => {
+          button.style.display = 'none';
+          welcome.style.display = 'block';
+
+          // setelah 3 detik, welcome hilang dan matrix mulai
+          setTimeout(() => {
+            welcome.style.display = 'none';
+            startMatrixRain();
+          }, 3000);
+        }, 400);
+
+        isActive = true;
+      }
     });
   </script>
 </body>
