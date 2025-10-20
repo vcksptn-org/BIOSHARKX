@@ -65,15 +65,15 @@
 #terminal {
   display: none;
   position: absolute;
-  bottom: 30px; /* dari bawah */
-  right: 40px;  /* dari kanan */
-  transform: scale(0.3); /* 3x lebih kecil */
+  bottom: 0;   /* Nempel ke bawah */
+  right: 0;    /* Nempel ke kanan */
+  transform: scale(0.5); /* Ukuran kecil tapi tetap terbaca */
   width: 70%;
   max-width: 480px;
   border: 2px solid #00ff00;
   padding: 10px 15px;
-  background-color: rgba(0, 0, 0, 0.75);
-  box-shadow: 0 0 12px #00ff00;
+  background-color: rgba(0, 0, 0, 0.85);
+  box-shadow: 0 0 18px #00ff00;
   z-index: 2;
   line-height: 1.4em;
   font-size: 14px;
@@ -84,7 +84,7 @@
 /* Saat muncul */
 #terminal.show {
   opacity: 1;
-  transform: scale(0.3);
+  transform: scale(0.5);
   animation: terminalPulse 2s infinite;
 }
 
