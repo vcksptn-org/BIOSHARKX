@@ -1,66 +1,235 @@
-<!DOCTYPE html>
+<!doctype html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>vcksptn</title>
-  <style>
-    body {
-      background-color: #000;
-      display: flex;
-      justify-content: center;
-      align-items: center;
-      height: 100vh;
-      margin: 0;
-      overflow: hidden;
-    }
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width,initial-scale=1" />
+<title>vcksptn — Matrix</title>
+<style>
+  html,body{height:100%;margin:0;background:#000;overflow:hidden;font-family:monospace}
+  /* canvas matrix di background */
+  canvas#matrix {
+    position:fixed; inset:0;
+    width:100%; height:100%;
+    display:block; z-index:0;
+    background:#000;
+  }
 
-    .button {
-      position: relative;
-      width: 120px;
-      height: 120px;
-      border-radius: 50%;
-      border: 2px solid #00ff00;
-      color: #00ff00;
-      text-align: center;
-      line-height: 120px;
-      font-family: Arial, sans-serif;
-      font-size: 24px;
-      cursor: pointer;
-      box-shadow: 0 0 20px #00ff00;
-      transition: all 0.3s ease;
-    }
+  /* tombol ON lingkaran kecil */
+  .on-wrap {
+    position:fixed;
+    left:50%; top:60%;
+    transform:translate(-50%,-50%);
+    z-index:2;
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    pointer-events:auto;
+  }
 
-    .button:hover {
-      box-shadow: 0 0 40px #00ff00, 0 0 80px #00ff00;
-      transform: scale(1.1);
-    }
+  button.on-btn {
+    width:88px;
+    height:88px;
+    border-radius:50%;
+    border:3px solid #00ff55;
+    background:transparent;
+    color:#00ff55;
+    font-size:16px;
+    line-height:1;
+    cursor:pointer;
+    outline:none;
+    box-shadow:
+      0 0 8px rgba(0,255,85,0.35),
+      0 0 28px rgba(0,255,85,0.12) inset;
+    display:inline-flex;
+    align-items:center;
+    justify-content:center;
+    transition:transform .18s ease, box-shadow .18s ease, background .18s;
+    -webkit-tap-highlight-color: transparent;
+  }
 
-    .button:active {
-      background-color: #00ff00;
-      color: #000;
-      box-shadow: 0 0 60px #00ff00;
-    }
+  button.on-btn:hover{ transform:scale(1.07); box-shadow:0 0 18px rgba(0,255,85,0.45), 0 0 40px rgba(0,255,85,0.12) inset; }
+  button.on-btn:active{ transform:scale(.98); }
 
-    /* Animasi "glow" berdenyut */
-    @keyframes pulse {
-      0% { box-shadow: 0 0 10px #00ff00; }
-      50% { box-shadow: 0 0 25px #00ff00; }
-      100% { box-shadow: 0 0 10px #00ff00; }
-    }
+  /* glow ring tambahan */
+  button.on-btn::before{
+    content:"";
+    position:absolute;
+    inset:-10px;
+    border-radius:50%;
+    filter:blur(10px);
+    background: radial-gradient(circle, rgba(0,255,100,0.25), rgba(0,0,0,0));
+    z-index:-1;
+    pointer-events:none;
+    transition:opacity .3s;
+  }
 
-    .button {
-      animation: pulse 1.5s infinite;
-    }
-  </style>
+  /* teks welcome di atas, awalnya disembunyikan */
+  .welcome {
+    position:fixed;
+    top:6%;
+    width:100%;
+    text-align:center;
+    z-index:2;
+    color:#00ff77;
+    font-size:20px;
+    letter-spacing:4px;
+    opacity:0;
+    transform:translateY(-6px);
+    text-shadow:0 0 10px rgba(0,255,120,0.9);
+    transition:opacity .9s ease, transform .9s ease;
+    pointer-events:none;
+  }
+
+  /* style saat aktif (munculkan welcome) */
+  .show-welcome { opacity:1; transform:translateY(0); }
+
+  /* mobile friendly */
+  @media (max-width:420px){
+    button.on-btn{ width:76px; height:76px; font-size:15px; }
+    .welcome{font-size:18px; letter-spacing:3px}
+  }
+</style>
 </head>
 <body>
-  <div class="button" onclick="enterSite()">ON</div>
 
-  <script>
-    function enterSite() {
-      window.location.href = "main.html"; // ganti ke halaman utama blog kamu nanti
+<canvas id="matrix"></canvas>
+
+<div class="on-wrap">
+  <button class="on-btn" id="onBtn" aria-label="Enter site">ON</button>
+</div>
+
+<div class="welcome" id="welcomeText">WELCOME TO THE SYSTEM</div>
+
+<!-- Audio: letakkan file boot.mp3 (atau ubah nama sesuai file di repo) -->
+<audio id="boot" preload="auto">
+  <source src="boot.mp3" type="audio/mpeg">
+  <!-- fallback: jika kamu pakai nama lain, ganti src di atas -->
+</audio>
+
+<script>
+/* ---------------------------
+   Matrix rain (canvas)
+   --------------------------- */
+(function(){
+  const canvas = document.getElementById('matrix');
+  const ctx = canvas.getContext('2d');
+  function resize(){ canvas.width = innerWidth; canvas.height = innerHeight; }
+  window.addEventListener('resize', resize, {passive:true});
+  resize();
+
+  const letters = "アァカサタナハマヤャラワン0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZ@#$%^&*()";
+  const fontSize = Math.max(12, Math.floor((window.innerWidth/80)));
+  let columns = Math.floor(canvas.width / fontSize);
+  let drops = new Array(columns).fill(1);
+
+  function resetMatrix() {
+    columns = Math.floor(canvas.width / fontSize);
+    drops = new Array(columns).fill(1);
+  }
+  window.addEventListener('resize', () => {
+    resetMatrix();
+  });
+
+  ctx.font = fontSize + "px monospace";
+
+  function draw(){
+    // trailing effect
+    ctx.fillStyle = "rgba(0,0,0,0.07)";
+    ctx.fillRect(0,0,canvas.width,canvas.height);
+
+    // matrix chars
+    ctx.fillStyle = "#00ff66";
+    ctx.font = fontSize + "px monospace";
+    for(let i=0;i<drops.length;i++){
+      const text = letters.charAt(Math.floor(Math.random()*letters.length));
+      ctx.fillText(text, i*fontSize, drops[i]*fontSize);
+      if(drops[i]*fontSize > canvas.height && Math.random() > 0.975) drops[i]=0;
+      drops[i]++;
     }
-  </script>
+    requestAnimationFrame(draw);
+  }
+  requestAnimationFrame(draw);
+})();
+
+/* ---------------------------
+   Button / audio / welcome
+   --------------------------- */
+(function(){
+  const btn = document.getElementById('onBtn');
+  const audioEl = document.getElementById('boot');
+  const welcome = document.getElementById('welcomeText');
+
+  // prepare audio fade-in using WebAudio for smoother control
+  let audioCtx, sourceNode, gainNode;
+  function prepareAudio() {
+    if (audioCtx) return;
+    try {
+      audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+      gainNode = audioCtx.createGain();
+      gainNode.gain.value = 0; // start muted
+      sourceNode = audioCtx.createMediaElementSource(audioEl);
+      sourceNode.connect(gainNode).connect(audioCtx.destination);
+    } catch (e){
+      console.warn('WebAudio not available, fallback to direct audio element', e);
+    }
+  }
+
+  // fade volume to target (0..1)
+  function fadeTo(target, timeMs=1200){
+    if (gainNode && audioCtx) {
+      const now = audioCtx.currentTime;
+      gainNode.gain.cancelScheduledValues(now);
+      gainNode.gain.setValueAtTime(gainNode.gain.value, now);
+      gainNode.gain.linearRampToValueAtTime(target, now + timeMs/1000);
+    } else {
+      // fallback: use element volume
+      const start = audioEl.volume || 0;
+      const diff = target - start;
+      const steps = 20;
+      let i = 0;
+      audioEl.volume = start;
+      const iv = setInterval(()=> {
+        i++;
+        audioEl.volume = Math.min(1, start + diff*(i/steps));
+        if (i>=steps) clearInterval(iv);
+      }, timeMs/steps);
+    }
+  }
+
+  // click handler
+  btn.addEventListener('click', async function onClick(e){
+    // prevent double click
+    btn.disabled = true;
+
+    // prepare audio context (works only after user gesture)
+    prepareAudio();
+
+    try {
+      // resume audio context if suspended (Safari)
+      if (audioCtx && audioCtx.state === 'suspended') await audioCtx.resume();
+      audioEl.loop = true;
+      audioEl.volume = 0;
+      await audioEl.play(); // play must be triggered by user gesture (works here)
+      // fade in to comfortable level
+      fadeTo(0.6, 1200);
+    } catch (err) {
+      console.warn('Audio play failed:', err);
+    }
+
+    // animate button out
+    btn.style.transition = 'transform .6s ease, opacity .6s ease';
+    btn.style.transform = 'translateY(20px) scale(.8)';
+    btn.style.opacity = '0';
+    setTimeout(()=> {
+      // remove button from view so welcome is interactive
+      const wrap = document.querySelector('.on-wrap');
+      if (wrap) wrap.style.display = 'none';
+      // show welcome
+      welcome.classList.add('show-welcome');
+    }, 600);
+  }, { once:true });
+
+})();
+</script>
 </body>
 </html>
