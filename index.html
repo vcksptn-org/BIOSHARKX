@@ -24,36 +24,47 @@
       z-index: 0;
     }
 
+    /* Tombol ON berbentuk lingkaran berdenyut */
     .center {
       position: absolute;
       top: 50%;
       left: 50%;
       transform: translate(-50%, -50%);
-      text-align: center;
       z-index: 2;
     }
 
     #onButton {
-      background: transparent;
-      border: 2px solid #00ff00;
+      width: 140px;
+      height: 140px;
+      border-radius: 50%;
+      border: 3px solid #00ff00;
+      background: black;
       color: #00ff00;
       font-size: 24px;
-      padding: 10px 40px;
+      letter-spacing: 2px;
       cursor: pointer;
-      transition: all 0.5s ease;
+      box-shadow: 0 0 25px #00ff00;
+      transition: all 0.4s ease;
       text-shadow: 0 0 10px #00ff00;
+      animation: pulse 1.8s infinite;
     }
 
     #onButton:hover {
       background: #00ff00;
       color: black;
-      box-shadow: 0 0 20px #00ff00;
+      box-shadow: 0 0 35px #00ff00;
+    }
+
+    @keyframes pulse {
+      0% { box-shadow: 0 0 15px #00ff00; }
+      50% { box-shadow: 0 0 40px #00ff00; }
+      100% { box-shadow: 0 0 15px #00ff00; }
     }
 
     #terminal {
       display: none;
       position: absolute;
-      top: 50px;
+      top: 60px;
       left: 50%;
       transform: translateX(-50%);
       width: 80%;
@@ -131,7 +142,7 @@
     btn.addEventListener("click", () => {
       music.play().catch(() => console.log("Autoplay blocked"));
       btn.style.opacity = 0;
-      setTimeout(() => btn.style.display = "none", 1000);
+      setTimeout(() => btn.style.display = "none", 800);
       setTimeout(() => {
         terminal.style.display = "block";
       }, 1000);
