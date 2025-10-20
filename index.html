@@ -1,8 +1,8 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Matrix Power</title>
   <style>
     body {
@@ -48,6 +48,14 @@
       box-shadow: 0 0 35px limegreen;
       transform: scale(1.05);
     }
+
+    #mainContent {
+      display: none;
+      z-index: 1;
+      color: limegreen;
+      font-size: 36px;
+      text-align: center;
+    }
   </style>
 </head>
 <body>
@@ -56,13 +64,18 @@
 
   <audio id="music" src="boot.mp3"></audio>
 
+  <div id="mainContent">
+    <h1>Selamat datang di halaman utama!</h1>
+  </div>
+
   <script>
     const button = document.getElementById('powerButton');
     const canvas = document.getElementById('matrix');
     const ctx = canvas.getContext('2d');
     const music = document.getElementById('music');
+    const mainContent = document.getElementById('mainContent');
 
-    // Atur ukuran awal canvas
+    // Atur ukuran canvas sesuai layar
     canvas.width = window.innerWidth;
     canvas.height = window.innerHeight;
 
@@ -91,20 +104,18 @@
 
     setInterval(drawMatrix, 33);
 
-    // Saat tombol diklik
+    // Jalankan musik & tampilkan konten utama setelah klik ON
     button.addEventListener('click', () => {
-      // Mainkan musik setelah interaksi (bekerja di semua browser)
       music.volume = 0.6;
       music.play();
 
-      // Animasi tombol menghilang
+      // Tombol menghilang dengan animasi
       button.style.opacity = '0';
       button.style.transform = 'scale(0.8)';
 
       setTimeout(() => {
         button.style.display = 'none';
-        // Redirect ke halaman utama (ganti "main.html" sesuai kebutuhan)
-        window.location.href = "main.html";
+        mainContent.style.display = 'block';
       }, 500);
     });
 
