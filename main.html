@@ -5,53 +5,168 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>VCKSPTN SYSTEM</title>
   <style>
-    body {
-      background-color: black;
-      color: #00ff00;
-      font-family: "Courier New", monospace;
+    html, body {
       margin: 0;
-      padding: 20px;
+      padding: 0;
+      height: 100%;
       overflow: hidden;
+      background: black;
+      font-family: "Courier New", monospace;
+      color: #00ff00;
     }
 
-    .container {
-      max-width: 800px;
-      margin: 80px auto;
+    canvas {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      z-index: 0;
+    }
+
+    .center {
+      position: absolute;
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -50%);
+      text-align: center;
+      z-index: 2;
+    }
+
+    #onButton {
+      background: transparent;
+      border: 2px solid #00ff00;
+      color: #00ff00;
+      font-size: 24px;
+      padding: 10px 40px;
+      cursor: pointer;
+      transition: all 0.5s ease;
       text-shadow: 0 0 10px #00ff00;
     }
 
-    h1 {
-      text-align: center;
-      font-size: 28px;
-      margin-bottom: 20px;
+    #onButton:hover {
+      background: #00ff00;
+      color: black;
+      box-shadow: 0 0 20px #00ff00;
     }
 
-    .terminal {
+    #title {
+      position: absolute;
+      top: 20px;
+      width: 100%;
+      text-align: center;
+      font-size: 26px;
+      letter-spacing: 2px;
+      color: #00ff00;
+      text-shadow: 0 0 10px #00ff00;
+      opacity: 0;
+      transition: opacity 2s ease;
+      z-index: 2;
+    }
+
+    #terminal {
+      display: none;
+      position: absolute;
+      top: 40%;
+      left: 50%;
+      transform: translateX(-50%);
+      width: 80%;
+      max-width: 800px;
       border: 2px solid #00ff00;
       padding: 20px;
       background-color: rgba(0, 0, 0, 0.7);
       box-shadow: 0 0 20px #00ff00;
+      z-index: 2;
       line-height: 1.5em;
     }
 
-    .green {
-      color: #00ff00;
-    }
     .yellow {
       color: #ffff66;
     }
   </style>
 </head>
 <body>
-  <div class="container">
-    <h1>WELCOME TO VCKSPTN SYSTEM</h1>
-    <div class="terminal">
-      &gt; Initializing access...<br>
-      &gt; System status: OK<br>
-      &gt; Loading user environment...<br>
-      &gt; Access granted.<br>
-      &gt; Hello, <span class="yellow">Operator</span>. Welcome back.
-    </div>
+  <canvas id="matrix"></canvas>
+
+  <div class="center">
+    <button id="onButton">ON</button>
   </div>
+
+  <div id="title">WELCOME TO SYSTEM</div>
+
+  <div id="terminal">
+    &gt; Initializing access...<br>
+    &gt; System status: OK<br>
+    &gt; Loading user environment...<br>
+    &gt; Access granted.<br>
+    &gt; Hello, <span class="yellow">Operator</span>. Welcome back.
+  </div>
+
+  <audio id="music" src="boot.mp3" loop></audio>
+
+  <script>
+    // Efek hujan Matrix
+    const canvas = document.getElementById("matrix");
+    const ctx = canvas.getContext("2d");
+
+    canvas.height = window.innerHeight;
+    canvas.width = window.innerWidth;
+
+    const chars = "アァカサタナハマヤャラワガザダバパイィキシチニヒミリヰギジヂビピウゥクスツヌフムユュルグズヅブプエェケセテネヘメレヱゲゼデベペオォコソトノホモヨョロゴゾドボポヴッンABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789";
+    const fontSize = 16;
+    const columns = canvas.width / fontSize;
+    const drops = [];
+
+    for (let x = 0; x < columns; x++) drops[x] = 1;
+
+    function draw() {
+      ctx.fillStyle = "rgba(0, 0, 0, 0.05)";
+      ctx.fillRect(0, 0, canvas.width, canvas.height);
+
+      ctx.fillStyle = "#00ff00";
+      ctx.font = fontSize + "px monospace";
+
+      for (let i = 0; i < drops.length; i++) {
+        const text = chars.charAt(Math.floor(Math.random() * chars.length));
+        ctx.fillText(text, i * fontSize, drops[i] * fontSize);
+
+        if (drops[i] * fontSize > canvas.height && Math.random() > 0.975)
+          drops[i] = 0;
+        drops[i]++;
+      }
+    }
+
+    setInterval(draw, 33);
+
+    // Interaksi tombol ON
+    const btn = document.getElementById("onButton");
+    const title = document.getElementById("title");
+    const terminal = document.getElementById("terminal");
+    const music = document.getElementById("music");
+
+    btn.addEventListener("click", () => {
+      // Mainkan musik setelah klik
+      music.play().catch(() => console.log("Autoplay blocked"));
+
+      // Animasi tombol hilang
+      btn.style.opacity = 0;
+      setTimeout(() => btn.style.display = "none", 1000);
+
+      // Tampilkan teks dan terminal
+      setTimeout(() => {
+        title.style.opacity = 1;
+      }, 1000);
+
+      setTimeout(() => {
+        terminal.style.display = "block";
+      }, 2500);
+    });
+
+    // Sesuaikan ukuran kanvas saat resize
+    window.addEventListener("resize", () => {
+      canvas.height = window.innerHeight;
+      canvas.width = window.innerWidth;
+    });
+  </script>
 </body>
 </html>
