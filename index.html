@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Matrix Power</title>
+  <title>System Boot</title>
   <style>
     body {
       margin: 0;
@@ -11,10 +11,10 @@
       overflow: hidden;
       background-color: black;
       display: flex;
-      justify-content: center;
-      align-items: center;
-      height: 100vh;
       flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      height: 100vh;
       font-family: monospace;
       color: limegreen;
     }
@@ -49,37 +49,35 @@
       transform: scale(1.05);
     }
 
-    #mainContent {
-      display: none;
-      z-index: 1;
+    #title {
+      position: absolute;
+      top: 40px;
+      font-size: 32px;
+      font-weight: bold;
       color: limegreen;
-      font-size: 36px;
       text-align: center;
+      z-index: 1;
+      opacity: 0;
+      transform: scale(0.9);
+      transition: all 1.5s ease;
     }
   </style>
 </head>
 <body>
   <canvas id="matrix"></canvas>
+
+  <h1 id="title">WELCOME TO SYSTEM</h1>
   <button class="button" id="powerButton">ON</button>
 
   <audio id="music" src="boot.mp3"></audio>
 
-  <div id="mainContent">
-    <h1></h1>
-  </div>
-
   <script>
-    const button = document.getElementById('powerButton');
+    // MATRIX RAIN
     const canvas = document.getElementById('matrix');
     const ctx = canvas.getContext('2d');
-    const music = document.getElementById('music');
-    const mainContent = document.getElementById('mainContent');
-
-    // Atur ukuran canvas sesuai layar
     canvas.width = window.innerWidth;
     canvas.height = window.innerHeight;
 
-    // Efek hujan Matrix langsung aktif
     const letters = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789';
     const fontSize = 16;
     const columns = canvas.width / fontSize;
@@ -94,32 +92,39 @@
       for (let i = 0; i < drops.length; i++) {
         const text = letters.charAt(Math.floor(Math.random() * letters.length));
         ctx.fillText(text, i * fontSize, drops[i] * fontSize);
-
-        if (drops[i] * fontSize > canvas.height && Math.random() > 0.975) {
-          drops[i] = 0;
-        }
+        if (drops[i] * fontSize > canvas.height && Math.random() > 0.975) drops[i] = 0;
         drops[i]++;
       }
     }
-
     setInterval(drawMatrix, 33);
 
-    // Jalankan musik & tampilkan konten utama setelah klik ON
+    // POWER BUTTON
+    const button = document.getElementById('powerButton');
+    const music = document.getElementById('music');
+    const title = document.getElementById('title');
+
     button.addEventListener('click', () => {
+      // mainkan musik
       music.volume = 0.6;
       music.play();
 
-      // Tombol menghilang dengan animasi
+      // animasi tombol hilang
       button.style.opacity = '0';
       button.style.transform = 'scale(0.8)';
+      setTimeout(() => button.style.display = 'none', 600);
 
+      // tampilkan teks
       setTimeout(() => {
-        button.style.display = 'none';
-        mainContent.style.display = 'block';
-      }, 500);
+        title.style.opacity = '1';
+        title.style.transform = 'scale(1)';
+      }, 700);
+
+      // pindah ke main.html setelah 4 detik
+      setTimeout(() => {
+        window.location.href = 'main.html';
+      }, 4000);
     });
 
-    // Resize canvas saat layar berubah
     window.addEventListener('resize', () => {
       canvas.width = window.innerWidth;
       canvas.height = window.innerHeight;
