@@ -65,9 +65,9 @@
 #terminal {
   display: none;
   position: absolute;
-  bottom: 0;   /* Nempel ke bawah */
-  right: 0;    /* Nempel ke kanan */
-  transform: scale(0.5); /* Ukuran kecil tapi tetap terbaca */
+  bottom: 0;
+  right: -180px; /* 3x lebih ke kanan dari posisi sebelumnya */
+  transform: scale(0.5);
   width: 70%;
   max-width: 480px;
   border: 2px solid #00ff00;
@@ -79,100 +79,22 @@
   font-size: 14px;
   opacity: 0;
   transition: all 1.2s ease;
+  animation: blinkEffect 1.2s infinite alternate;
 }
 
 /* Saat muncul */
 #terminal.show {
   opacity: 1;
   transform: scale(0.5);
-  animation: terminalPulse 2s infinite;
-} 
+  animation: terminalPulse 2s infinite, blinkEffect 1.2s infinite alternate;
+}
 
-    @keyframes terminalPulse {
-      0% { box-shadow: 0 0 10px #00ff00; }
-      50% { box-shadow: 0 0 20px #00ff00; }
-      100% { box-shadow: 0 0 10px #00ff00; }
-    }
-
-    .yellow {
-      color: #ffff66;
-    }
-  </style>
-</head>
-<body>
-  <canvas id="matrix"></canvas>
-
-  <div class="center">
-    <button id="onButton">ON</button>
-  </div>
-
-  <div id="terminal">
-    &gt; Initializing access...<br>
-    &gt; System status: OK<br>
-    &gt; Loading user environment...<br>
-    &gt; Access granted.<br>
-    &gt; Hello, <span class="yellow">Operator</span>. Welcome back.
-  </div>
-
-  <audio id="music" src="boot.mp3" loop></audio>
-
-  <script>
-    // Efek hujan Matrix
-    const canvas = document.getElementById("matrix");
-    const ctx = canvas.getContext("2d");
-
-    canvas.height = window.innerHeight;
-    canvas.width = window.innerWidth;
-
-    const chars = "アァカサタナハマヤャラワガザダバパイィキシチニヒミリヰギジヂビピウゥクスツヌフムユュルグズヅブプエェケセテネヘメレヱゲゼデベペオォコソトノホモヨョロゴゾドボポヴッンABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789";
-    const fontSize = 16;
-    const columns = canvas.width / fontSize;
-    const drops = [];
-
-    for (let x = 0; x < columns; x++) drops[x] = 1;
-
-    function draw() {
-      ctx.fillStyle = "rgba(0, 0, 0, 0.05)";
-      ctx.fillRect(0, 0, canvas.width, canvas.height);
-
-      ctx.fillStyle = "#00ff00";
-      ctx.font = fontSize + "px monospace";
-
-      for (let i = 0; i < drops.length; i++) {
-        const text = chars.charAt(Math.floor(Math.random() * chars.length));
-        ctx.fillText(text, i * fontSize, drops[i] * fontSize);
-
-        if (drops[i] * fontSize > canvas.height && Math.random() > 0.975)
-          drops[i] = 0;
-        drops[i]++;
-      }
-    }
-
-    setInterval(draw, 33);
-
-    // Tombol ON
-    const btn = document.getElementById("onButton");
-    const terminal = document.getElementById("terminal");
-    const music = document.getElementById("music");
-
-    btn.addEventListener("click", () => {
-      music.play().catch(() => console.log("Autoplay blocked"));
-      btn.style.opacity = 0;
-      setTimeout(() => btn.style.display = "none", 800);
-      setTimeout(() => {
-        terminal.style.display = "block";
-        setTimeout(() => terminal.classList.add("show"), 50);
-      }, 1000);
-    });
-
-    window.addEventListener("resize", () => {
-      canvas.height = window.innerHeight;
-      canvas.width = window.innerWidth;
-    });
-  </script>
-</body>
-</html>
-
+/* Efek berkedip */
+@keyframes blinkEffect {
+  0% { opacity: 1; filter: brightness(1); }
+  50% { opacity: 0.7; filter: brightness(1.4); }
+  100% { opacity: 1; filter: brightness(1); }
+}
 -----------------------------
   <!-- Animasi Mengetik -->
   <div id="typingContainer">
