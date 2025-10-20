@@ -3,46 +3,60 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Power Button</title>
+  <title>Matrix System</title>
   <style>
     body {
-      background-color: black;
+      margin: 0;
+      overflow: hidden;
+      background: black;
+      font-family: monospace;
+      color: #00ff00;
       display: flex;
       justify-content: center;
       align-items: center;
       height: 100vh;
-      margin: 0;
       flex-direction: column;
-      color: limegreen;
-      font-family: Arial, sans-serif;
-      overflow: hidden;
     }
 
-    .button {
-      width: 120px;
-      height: 120px;
+    canvas {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      z-index: 0;
+    }
+
+    /* Tombol ON */
+    .on-button {
+      position: relative;
+      border: 2px solid #00ff00;
       border-radius: 50%;
-      border: 2px solid limegreen;
-      background-color: black;
-      color: limegreen;
-      font-size: 22px;
-      font-weight: bold;
+      background: transparent;
+      color: #00ff00;
+      font-size: 20px;
+      padding: 25px 32px;
       cursor: pointer;
-      box-shadow: 0 0 20px limegreen;
-      transition: all 0.4s ease;
+      box-shadow: 0 0 20px #00ff00;
+      transition: all 0.3s ease;
+      z-index: 2;
     }
 
-    .button:hover {
-      box-shadow: 0 0 35px limegreen;
-      transform: scale(1.05);
+    .on-button:hover {
+      transform: scale(1.1);
+      box-shadow: 0 0 30px #00ff00;
     }
 
+    /* Welcome text */
     #welcome {
       display: none;
-      font-size: 34px;
-      opacity: 0;
-      color: limegreen;
-      animation: fadeInOut 3s forwards;
+      position: absolute;
+      font-size: 28px;
+      letter-spacing: 2px;
+      color: #00ff00;
+      text-shadow: 0 0 20px #00ff00;
+      animation: fadeInOut 2s ease forwards;
+      z-index: 2;
     }
 
     @keyframes fadeInOut {
@@ -54,39 +68,62 @@
   </style>
 </head>
 <body>
-  <button class="button" id="powerButton">ON</button>
-  <h1 id="welcome">Welcome</h1>
+  <canvas id="matrix"></canvas>
+  <button class="on-button" id="onButton">ON</button>
+  <div id="welcome">WELCOME</div>
 
-  <audio id="music" src="boot.mp3"></audio>
+  <audio id="bootSound" src="boot.mp3"></audio>
 
   <script>
-    const button = document.getElementById('powerButton');
-    const welcome = document.getElementById('welcome');
-    const music = document.getElementById('music');
-    let isActive = false;
+    // Setup canvas Matrix rain
+    const canvas = document.getElementById("matrix");
+    const ctx = canvas.getContext("2d");
+    canvas.height = window.innerHeight;
+    canvas.width = window.innerWidth;
 
-    button.addEventListener('click', () => {
-      if (!isActive) {
-        // Mainkan musik
-        music.play();
+    const letters = "アァカサタナハマヤャラワン0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZ";
+    const fontSize = 14;
+    const columns = canvas.width / fontSize;
+    const drops = Array(Math.floor(columns)).fill(1);
 
-        // Hilangkan tombol
-        button.style.opacity = '0';
-        button.style.transform = 'scale(0.8)';
-        setTimeout(() => {
-          button.style.display = 'none';
-
-          // Tampilkan Welcome
-          welcome.style.display = 'block';
-
-          // Setelah animasi selesai, sembunyikan teks
-          setTimeout(() => {
-            welcome.style.display = 'none';
-          }, 3000);
-        }, 400);
-
-        isActive = true;
+    function drawMatrix() {
+      ctx.fillStyle = "rgba(0, 0, 0, 0.05)";
+      ctx.fillRect(0, 0, canvas.width, canvas.height);
+      ctx.fillStyle = "#00ff00";
+      ctx.font = fontSize + "px monospace";
+      for (let i = 0; i < drops.length; i++) {
+        const text = letters.charAt(Math.floor(Math.random() * letters.length));
+        ctx.fillText(text, i * fontSize, drops[i] * fontSize);
+        if (drops[i] * fontSize > canvas.height && Math.random() > 0.975) drops[i] = 0;
+        drops[i]++;
       }
+    }
+
+    // Jalankan Matrix rain langsung
+    setInterval(drawMatrix, 35);
+
+    // Tombol ON logic
+    const btn = document.getElementById("onButton");
+    const welcome = document.getElementById("welcome");
+    const sound = document.getElementById("bootSound");
+
+    btn.addEventListener("click", async () => {
+      btn.style.opacity = "0";
+      btn.style.transform = "scale(0.8)";
+      setTimeout(() => (btn.style.display = "none"), 300);
+
+      // Play musik jika ada
+      try { await sound.play(); } catch (e) { console.warn("Musik gagal diputar:", e); }
+
+      // Tampilkan teks "Welcome" selama 2 detik
+      welcome.style.display = "block";
+      setTimeout(() => { welcome.style.display = "none"; }, 2000);
+    });
+
+    // Resize
+    window.addEventListener("resize", () => {
+      canvas.height = window.innerHeight;
+      canvas.width = window.innerWidth;
     });
   </script>
 </body>
