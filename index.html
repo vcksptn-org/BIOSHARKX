@@ -48,40 +48,25 @@
       box-shadow: 0 0 35px limegreen;
       transform: scale(1.05);
     }
-
-    #mainContent {
-      display: none;
-      z-index: 1;
-      color: limegreen;
-      font-size: 36px;
-    }
   </style>
 </head>
 <body>
   <canvas id="matrix"></canvas>
   <button class="button" id="powerButton">ON</button>
-  <div id="mainContent">Welcome to the Main Page</div>
 
-  <audio id="music" src="boot.mp3" autoplay loop></audio>
+  <audio id="music" src="boot.mp3"></audio>
 
   <script>
     const button = document.getElementById('powerButton');
     const canvas = document.getElementById('matrix');
     const ctx = canvas.getContext('2d');
-    const mainContent = document.getElementById('mainContent');
+    const music = document.getElementById('music');
 
-    // Atur ukuran canvas
+    // Atur ukuran awal canvas
     canvas.width = window.innerWidth;
     canvas.height = window.innerHeight;
 
-    // Musik mulai otomatis
-    const music = document.getElementById('music');
-    music.volume = 0.6;
-    music.play().catch(() => {
-      // Browser kadang blokir autoplay, diabaikan
-    });
-
-    // Efek hujan matrix langsung aktif
+    // Efek hujan Matrix langsung aktif
     const letters = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789';
     const fontSize = 16;
     const columns = canvas.width / fontSize;
@@ -108,12 +93,19 @@
 
     // Saat tombol diklik
     button.addEventListener('click', () => {
+      // Mainkan musik setelah interaksi (bekerja di semua browser)
+      music.volume = 0.6;
+      music.play();
+
+      // Animasi tombol menghilang
       button.style.opacity = '0';
       button.style.transform = 'scale(0.8)';
+
       setTimeout(() => {
         button.style.display = 'none';
-        mainContent.style.display = 'block';
-      }, 400);
+        // Redirect ke halaman utama (ganti "main.html" sesuai kebutuhan)
+        window.location.href = "main.html";
+      }, 500);
     });
 
     // Resize canvas saat layar berubah
