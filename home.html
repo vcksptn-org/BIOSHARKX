@@ -1,134 +1,153 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>VCKSPTN Terminal</title>
-  <style>
-    body {
-      margin: 0;
-      overflow: hidden;
-      background: black;
-      color: #00ff00;
-      font-family: "Courier New", monospace;
-    }
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>VCKSPTN SYSTEM</title>
+<style>
+  body {
+    margin: 0;
+    font-family: 'Courier New', monospace;
+    background: #0d1117;
+    color: white;
+    overflow-x: hidden;
+  }
 
-    canvas {
-      position: fixed;
-      top: 0;
-      left: 0;
-      width: 100%;
-      height: 100%;
-      z-index: 0;
-    }
+  header {
+    height: 100vh;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    background: radial-gradient(circle at center, #0d1117 60%, #000000);
+    flex-direction: column;
+  }
 
-    .container {
-      position: relative;
-      z-index: 1;
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-      justify-content: center;
-      height: 100vh;
-      text-align: center;
-      animation: fadeIn 2s ease;
-    }
+  #terminal {
+    font-size: 18px;
+    line-height: 1.5;
+    white-space: pre;
+    color: #ffffff;
+    background: transparent;
+    text-shadow: 0 0 8px #4fc3f7;
+  }
 
-    h1 {
-      font-size: 28px;
-      text-shadow: 0 0 10px #00ff00;
-      letter-spacing: 3px;
-      margin-bottom: 10px;
-    }
+  .blue {
+    color: #4fc3f7;
+  }
 
-    p {
-      font-size: 14px;
-      opacity: 0.8;
-      max-width: 600px;
-      text-align: center;
-      line-height: 1.6;
-    }
+  .cursor {
+    display: inline-block;
+    width: 8px;
+    height: 20px;
+    background-color: #4fc3f7;
+    animation: blink 0.9s steps(1) infinite;
+    vertical-align: bottom;
+  }
 
-    .terminal {
-      margin-top: 30px;
-      width: 80%;
-      max-width: 700px;
-      background: rgba(0, 0, 0, 0.7);
-      border: 1px solid #00ff00;
-      border-radius: 6px;
-      padding: 20px;
-      text-align: left;
-      box-shadow: 0 0 15px #00ff00;
-    }
+  @keyframes blink {
+    50% { opacity: 0; }
+  }
 
-    .line {
-      margin: 5px 0;
-    }
+  main {
+    padding: 60px 20px;
+    max-width: 800px;
+    margin: auto;
+  }
 
-    .cursor {
-      display: inline-block;
-      width: 10px;
-      height: 16px;
-      background: #00ff00;
-      animation: blink 0.7s infinite;
-    }
+  h1 {
+    text-align: center;
+    color: #4fc3f7;
+    margin-bottom: 20px;
+  }
 
-    @keyframes blink {
-      50% { opacity: 0; }
-    }
-
-    @keyframes fadeIn {
-      from { opacity: 0; transform: scale(0.95); }
-      to { opacity: 1; transform: scale(1); }
-    }
-  </style>
+  footer {
+    text-align: center;
+    padding: 30px;
+    font-size: 14px;
+    color: #888;
+    border-top: 1px solid #333;
+  }
+</style>
 </head>
 <body>
-  <canvas id="matrix"></canvas>
 
-  <div class="container">
-    <h1>WELCOME TO VCKSPTN SYSTEM</h1>
-    <div class="terminal">
-      <div class="line">> Initializing access...</div>
-      <div class="line">> System status: <span style="color:#00ff00;">OK</span></div>
-      <div class="line">> Loading user environment...</div>
-      <div class="line">> Access granted.</div>
-      <div class="line">> Hello, <strong>Operator</strong>. Welcome back.</div>
-      <div class="line"><span class="cursor"></span></div>
-    </div>
-  </div>
+<header>
+  <div id="terminal"></div>
+</header>
 
-  <script>
-    // Efek hujan Matrix
-    const canvas = document.getElementById("matrix");
-    const ctx = canvas.getContext("2d");
-    canvas.height = window.innerHeight;
-    canvas.width = window.innerWidth;
+<main>
+  <h1>Selamat Datang di Blog VCKSPTN SYSTEM</h1>
+  <p>
+    Ini adalah contoh halaman utama blog dengan animasi terminal startup bergaya futuristik.
+    Kamu bisa menambahkan artikel, gambar, atau script tambahan di bawah ini.
+  </p>
+  <p>
+    Untuk mengganti teks animasi, cukup ubah daftar <code>lines</code> di bagian JavaScript.
+  </p>
+</main>
 
-    const letters = "アァカサタナハマヤャラワン0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZ";
-    const fontSize = 14;
-    const columns = canvas.width / fontSize;
-    const drops = Array(Math.floor(columns)).fill(1);
+<footer>
+  © 2025 VCKSPTN SYSTEM — All rights reserved.
+</footer>
 
-    function drawMatrix() {
-      ctx.fillStyle = "rgba(0, 0, 0, 0.05)";
-      ctx.fillRect(0, 0, canvas.width, canvas.height);
-      ctx.fillStyle = "#00ff00";
-      ctx.font = fontSize + "px monospace";
-      for (let i = 0; i < drops.length; i++) {
-        const text = letters.charAt(Math.floor(Math.random() * letters.length));
-        ctx.fillText(text, i * fontSize, drops[i] * fontSize);
-        if (drops[i] * fontSize > canvas.height && Math.random() > 0.975) drops[i] = 0;
-        drops[i]++;
-      }
+<script>
+const lines = [
+  "[SYSTEM] Boot sequence initiated...",
+  "Loading kernel modules... <span class='blue'>OK</span>",
+  "Starting network interfaces... <span class='blue'>ONLINE</span>",
+  "Verifying system integrity... <span class='blue'>PASSED</span>",
+  "Mounting virtual drives... <span class='blue'>DONE</span>",
+  "Launching core services...",
+  " > Service: auth_manager <span class='blue'>ACTIVE</span>",
+  " > Service: render_engine <span class='blue'>ACTIVE</span>",
+  " > Service: AI_module <span class='blue'>READY</span>",
+  "Initializing user interface...",
+  "Loading startup assets...",
+  "Compiling runtime scripts...",
+  "Connecting to remote cluster... <span class='blue'>STABLE</span>",
+  "Performing memory diagnostics... <span class='blue'>OK</span>",
+  "Finalizing environment setup...",
+  "--------------------------------------",
+  "System Status: <span class='blue'>ONLINE</span>",
+  "VCKSPTN SYSTEM v1.0",
+  "--------------------------------------"
+];
+
+const terminal = document.getElementById("terminal");
+let line = 0;
+let char = 0;
+let speed = 60;
+let delayBetweenLines = 600;
+
+function typeLine() {
+  if (line < lines.length) {
+    const currentLine = lines[line];
+    if (char < currentLine.length) {
+      terminal.innerHTML += currentLine.charAt(char);
+      char++;
+      setTimeout(typeLine, speed);
+    } else {
+      terminal.innerHTML += "\n";
+      char = 0;
+      line++;
+      setTimeout(typeLine, delayBetweenLines);
     }
-    setInterval(drawMatrix, 35);
+  } else {
+    // restart after 2 minutes
+    setTimeout(() => {
+      terminal.innerHTML = "";
+      line = 0;
+      typeLine();
+    }, 120000);
+  }
+}
 
-    // Responsif
-    window.addEventListener("resize", () => {
-      canvas.height = window.innerHeight;
-      canvas.width = window.innerWidth;
-    });
-  </script>
+const cursor = document.createElement("span");
+cursor.classList.add("cursor");
+terminal.after(cursor);
+
+typeLine();
+</script>
+
 </body>
 </html>
