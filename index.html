@@ -3,30 +3,19 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Matrix Power</title>
+  <title>Power Button</title>
   <style>
     body {
-      margin: 0;
-      padding: 0;
-      overflow: hidden;
       background-color: black;
       display: flex;
       justify-content: center;
       align-items: center;
       height: 100vh;
+      margin: 0;
       flex-direction: column;
-      font-family: monospace;
       color: limegreen;
-    }
-
-    canvas {
-      position: fixed;
-      top: 0;
-      left: 0;
-      width: 100%;
-      height: 100%;
-      display: none; /* <- disembunyikan dulu */
-      z-index: 0;
+      font-family: Arial, sans-serif;
+      overflow: hidden;
     }
 
     .button {
@@ -41,7 +30,6 @@
       cursor: pointer;
       box-shadow: 0 0 20px limegreen;
       transition: all 0.4s ease;
-      z-index: 2;
     }
 
     .button:hover {
@@ -51,10 +39,9 @@
 
     #welcome {
       display: none;
-      font-size: 36px;
-      color: limegreen;
+      font-size: 34px;
       opacity: 0;
-      z-index: 2;
+      color: limegreen;
       animation: fadeInOut 3s forwards;
     }
 
@@ -67,62 +54,34 @@
   </style>
 </head>
 <body>
-  <canvas id="matrix"></canvas>
   <button class="button" id="powerButton">ON</button>
   <h1 id="welcome">Welcome</h1>
+
   <audio id="music" src="boot.mp3"></audio>
 
   <script>
     const button = document.getElementById('powerButton');
     const welcome = document.getElementById('welcome');
     const music = document.getElementById('music');
-    const canvas = document.getElementById('matrix');
-    const ctx = canvas.getContext('2d');
-
     let isActive = false;
-
-    function startMatrixRain() {
-      canvas.style.display = 'block'; // baru muncul di sini
-      canvas.width = window.innerWidth;
-      canvas.height = window.innerHeight;
-
-      const letters = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789';
-      const fontSize = 16;
-      const columns = Math.floor(canvas.width / fontSize);
-      const drops = Array(columns).fill(1);
-
-      function draw() {
-        ctx.fillStyle = 'rgba(0, 0, 0, 0.05)';
-        ctx.fillRect(0, 0, canvas.width, canvas.height);
-        ctx.fillStyle = '#0F0';
-        ctx.font = fontSize + 'px monospace';
-        for (let i = 0; i < drops.length; i++) {
-          const text = letters.charAt(Math.floor(Math.random() * letters.length));
-          ctx.fillText(text, i * fontSize, drops[i] * fontSize);
-          if (drops[i] * fontSize > canvas.height && Math.random() > 0.975) {
-            drops[i] = 0;
-          }
-          drops[i]++;
-        }
-      }
-
-      setInterval(draw, 33);
-    }
 
     button.addEventListener('click', () => {
       if (!isActive) {
-        music.play().catch(() => {}); // play musik
+        // Mainkan musik
+        music.play();
+
+        // Hilangkan tombol
         button.style.opacity = '0';
         button.style.transform = 'scale(0.8)';
-
         setTimeout(() => {
           button.style.display = 'none';
+
+          // Tampilkan Welcome
           welcome.style.display = 'block';
 
-          // setelah 3 detik, welcome hilang dan matrix mulai
+          // Setelah animasi selesai, sembunyikan teks
           setTimeout(() => {
             welcome.style.display = 'none';
-            startMatrixRain();
           }, 3000);
         }, 400);
 
