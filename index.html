@@ -15,53 +15,67 @@
       flex-direction: column;
       color: limegreen;
       font-family: Arial, sans-serif;
+      overflow: hidden;
     }
 
     .button {
-      width: 150px;
-      height: 150px;
+      width: 160px;
+      height: 160px;
       border-radius: 50%;
       border: 2px solid limegreen;
-      background: black;
+      background-color: black;
       color: limegreen;
-      font-size: 24px;
+      font-size: 28px;
       font-weight: bold;
       cursor: pointer;
       box-shadow: 0 0 25px limegreen;
-      transition: all 0.3s ease;
+      transition: all 0.4s ease;
     }
 
     .button:hover {
-      background-color: limegreen;
-      color: black;
-      box-shadow: 0 0 50px limegreen;
+      box-shadow: 0 0 40px limegreen;
+      transform: scale(1.05);
+    }
+
+    #welcome {
+      display: none;
+      font-size: 40px;
+      opacity: 0;
+      color: limegreen;
+      animation: fadeIn 2s forwards;
+    }
+
+    @keyframes fadeIn {
+      from { opacity: 0; transform: scale(0.9); }
+      to { opacity: 1; transform: scale(1); }
     }
   </style>
 </head>
 <body>
   <button class="button" id="powerButton">ON</button>
-  
+  <h1 id="welcome">Welcome</h1>
+
   <audio id="music" src="boot.mp3"></audio>
 
   <script>
     const button = document.getElementById('powerButton');
+    const welcome = document.getElementById('welcome');
     const music = document.getElementById('music');
-    let isPlaying = false;
+    let isActive = false;
 
     button.addEventListener('click', () => {
-      if (!isPlaying) {
+      if (!isActive) {
+        // Mainkan musik
         music.play();
-        button.textContent = 'ON';
-        button.style.boxShadow = '0 0 50px limegreen';
-        isPlaying = true;
-      } else {
-        music.pause();
-        music.currentTime = 0;
-        button.textContent = 'OFF';
-        button.style.boxShadow = '0 0 25px red';
-        button.style.borderColor = 'red';
-        button.style.color = 'red';
-        isPlaying = false;
+        // Hilangkan tombol
+        button.style.opacity = '0';
+        button.style.transform = 'scale(0.8)';
+        setTimeout(() => {
+          button.style.display = 'none';
+          // Tampilkan teks Welcome
+          welcome.style.display = 'block';
+        }, 400);
+        isActive = true;
       }
     });
   </script>
