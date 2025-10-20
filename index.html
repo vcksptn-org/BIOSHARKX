@@ -1,102 +1,111 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>VCKSPTN SYSTEM</title>
-  <style>
-    html, body {
-      margin: 0;
-      padding: 0;
-      height: 100%;
-      overflow: hidden;
-      background: black;
-      font-family: "Courier New", monospace;
-      color: #00ff00;
-    }
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>VCKSPTN SYSTEM</title>
+<style>
+  html, body {
+    margin: 0;
+    padding: 0;
+    height: 100%;
+    overflow: hidden;
+    background: black;
+    font-family: "Courier New", monospace;
+    color: #00ff00;
+  }
 
-    canvas {
-      position: fixed;
-      top: 0;
-      left: 0;
-      width: 100%;
-      height: 100%;
-      z-index: 0;
-    }
+  canvas {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    z-index: 0;
+  }
 
-    /* Tombol ON */
-    .center {
-      position: absolute;
-      top: 50%;
-      left: 50%;
-      transform: translate(-50%, -50%);
-      z-index: 2;
-    }
+  .center {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    z-index: 2;
+  }
 
-    #onButton {
-      width: 70px;
-      height: 70px;
-      border-radius: 50%;
-      border: 2px solid #00ff00;
-      background: black;
-      color: #00ff00;
-      font-size: 18px;
-      letter-spacing: 2px;
-      cursor: pointer;
-      box-shadow: 0 0 15px #00ff00;
-      transition: all 0.4s ease;
-      text-shadow: 0 0 8px #00ff00;
-      animation: pulse 1.8s infinite;
-    }
+  #onButton {
+    width: 80px;
+    height: 80px;
+    border-radius: 50%;
+    border: 2px solid #00bfff;
+    background: black;
+    color: #00bfff;
+    font-size: 18px;
+    letter-spacing: 2px;
+    cursor: pointer;
+    box-shadow: 0 0 15px #00bfff;
+    transition: all 0.4s ease;
+    text-shadow: 0 0 8px #00bfff;
+    animation: pulse 1.8s infinite;
+  }
 
-    #onButton:hover {
-      background: #00ff00;
-      color: black;
-      box-shadow: 0 0 25px #00ff00;
-    }
+  #onButton:hover {
+    background: #00bfff;
+    color: black;
+    box-shadow: 0 0 25px #00bfff;
+  }
 
-    @keyframes pulse {
-      0% { box-shadow: 0 0 10px #00ff00; transform: scale(1); }
-      50% { box-shadow: 0 0 25px #00ff00; transform: scale(1.05); }
-      100% { box-shadow: 0 0 10px #00ff00; transform: scale(1); }
-    }
+  @keyframes pulse {
+    0% { box-shadow: 0 0 10px #00bfff; transform: scale(1); }
+    50% { box-shadow: 0 0 25px #00bfff; transform: scale(1.05); }
+    100% { box-shadow: 0 0 10px #00bfff; transform: scale(1); }
+  }
 
-    /* Kotak terminal */
-    #terminal {
-      display: none;
-      position: absolute;
-      top: 40px;
-      left: 50%;
-      transform: translateX(-50%) scale(0.9);
-      width: 70%;
-      max-width: 480px;
-      border: 2px solid #00ff00;
-      padding: 10px 15px;
-      background-color: rgba(0, 0, 0, 0.75);
-      box-shadow: 0 0 12px #00ff00;
-      z-index: 2;
-      line-height: 1.4em;
-      font-size: 14px;
-      opacity: 0;
-      transition: all 1.2s ease;
-    }
+  /* Terminal */
+  #terminal {
+    display: none;
+    position: absolute;
+    top: 40px;
+    left: 50%;
+    transform: translateX(-50%) scale(0.9);
+    width: 80%;
+    max-width: 600px;
+    border: 2px solid #00bfff;
+    padding: 15px;
+    background-color: rgba(0, 0, 0, 0.7);
+    box-shadow: 0 0 12px #00bfff;
+    z-index: 2;
+    line-height: 1.5em;
+    font-size: 15px;
+    opacity: 0;
+    transition: all 1.2s ease;
+    color: white;
+  }
 
-    #terminal.show {
-      opacity: 1;
-      transform: translateX(-50%) scale(1);
-      animation: terminalPulse 2s infinite;
-    }
+  #terminal.show {
+    opacity: 1;
+    transform: translateX(-50%) scale(1);
+    animation: terminalPulse 2s infinite;
+  }
 
-    @keyframes terminalPulse {
-      0% { box-shadow: 0 0 10px #00ff00; }
-      50% { box-shadow: 0 0 20px #00ff00; }
-      100% { box-shadow: 0 0 10px #00ff00; }
-    }
+  @keyframes terminalPulse {
+    0% { box-shadow: 0 0 10px #00bfff; }
+    50% { box-shadow: 0 0 20px #00bfff; }
+    100% { box-shadow: 0 0 10px #00bfff; }
+  }
 
-    .yellow {
-      color: #ffff66;
-    }
-  </style>
+  .blue { color: #00bfff; }
+  .cursor {
+    display: inline-block;
+    width: 8px;
+    height: 18px;
+    background-color: #00bfff;
+    animation: blink 0.9s steps(1) infinite;
+    vertical-align: bottom;
+  }
+  @keyframes blink {
+    50% { opacity: 0; }
+  }
+</style>
 </head>
 <body>
   <canvas id="matrix"></canvas>
@@ -105,68 +114,110 @@
     <button id="onButton">ON</button>
   </div>
 
-  <div id="terminal">
-    &gt; Initializing access...<br>
-    &gt; System status: OK<br>
-    &gt; Loading user environment...<br>
-    &gt; Access granted.<br>
-    &gt; Hello, <span class="yellow">Operator</span>. Welcome back.
-  </div>
+  <div id="terminal"></div>
 
   <audio id="music" src="boot.mp3" loop></audio>
 
   <script>
-    // Efek hujan Matrix
+    // MATRIX EFFECT
     const canvas = document.getElementById("matrix");
     const ctx = canvas.getContext("2d");
-
     canvas.height = window.innerHeight;
     canvas.width = window.innerWidth;
-
     const chars = "アァカサタナハマヤャラワガザダバパイィキシチニヒミリヰギジヂビピウゥクスツヌフムユュルグズヅブプエェケセテネヘメレヱゲゼデベペオォコソトノホモヨョロゴゾドボポヴッンABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789";
     const fontSize = 16;
     const columns = canvas.width / fontSize;
     const drops = [];
-
     for (let x = 0; x < columns; x++) drops[x] = 1;
 
     function draw() {
       ctx.fillStyle = "rgba(0, 0, 0, 0.05)";
       ctx.fillRect(0, 0, canvas.width, canvas.height);
-
-      ctx.fillStyle = "#00ff00";
+      ctx.fillStyle = "#00bfff";
       ctx.font = fontSize + "px monospace";
-
       for (let i = 0; i < drops.length; i++) {
         const text = chars.charAt(Math.floor(Math.random() * chars.length));
         ctx.fillText(text, i * fontSize, drops[i] * fontSize);
-
         if (drops[i] * fontSize > canvas.height && Math.random() > 0.975)
           drops[i] = 0;
         drops[i]++;
       }
     }
-
     setInterval(draw, 33);
+    window.addEventListener("resize", () => {
+      canvas.height = window.innerHeight;
+      canvas.width = window.innerWidth;
+    });
 
-    // Tombol ON
-    const btn = document.getElementById("onButton");
+    // TERMINAL ANIMATION
     const terminal = document.getElementById("terminal");
-    const music = document.getElementById("music");
+    const lines = [
+      "[SYSTEM] Boot sequence initiated...",
+      "Loading kernel modules... <span class='blue'>OK</span>",
+      "Starting network interfaces... <span class='blue'>ONLINE</span>",
+      "Verifying system integrity... <span class='blue'>PASSED</span>",
+      "Mounting virtual drives... <span class='blue'>DONE</span>",
+      "Launching core services...",
+      " > Service: auth_manager <span class='blue'>ACTIVE</span>",
+      " > Service: render_engine <span class='blue'>ACTIVE</span>",
+      " > Service: AI_module <span class='blue'>READY</span>",
+      "Initializing user interface...",
+      "Loading startup assets...",
+      "Compiling runtime scripts...",
+      "Connecting to remote cluster... <span class='blue'>STABLE</span>",
+      "Performing memory diagnostics... <span class='blue'>OK</span>",
+      "Finalizing environment setup...",
+      "--------------------------------------",
+      "System Status: <span class='blue'>ONLINE</span>",
+      "VCKSPTN SYSTEM v1.0",
+      "--------------------------------------"
+    ];
 
+    let line = 0;
+    let char = 0;
+    const speed = 60;
+    const delayBetweenLines = 600;
+
+    function typeLine() {
+      if (line < lines.length) {
+        const currentLine = lines[line];
+        if (char < currentLine.length) {
+          terminal.innerHTML += currentLine.charAt(char);
+          char++;
+          setTimeout(typeLine, speed);
+        } else {
+          terminal.innerHTML += "\n";
+          char = 0;
+          line++;
+          setTimeout(typeLine, delayBetweenLines);
+        }
+      } else {
+        // Restart every 2 min
+        setTimeout(() => {
+          terminal.innerHTML = "";
+          line = 0;
+          typeLine();
+        }, 120000);
+      }
+    }
+
+    // BUTTON LOGIC
+    const btn = document.getElementById("onButton");
+    const music = document.getElementById("music");
     btn.addEventListener("click", () => {
       music.play().catch(() => console.log("Autoplay blocked"));
       btn.style.opacity = 0;
       setTimeout(() => btn.style.display = "none", 800);
       setTimeout(() => {
         terminal.style.display = "block";
-        setTimeout(() => terminal.classList.add("show"), 50);
+        setTimeout(() => {
+          terminal.classList.add("show");
+          const cursor = document.createElement("span");
+          cursor.classList.add("cursor");
+          terminal.after(cursor);
+          typeLine();
+        }, 200);
       }, 1000);
-    });
-
-    window.addEventListener("resize", () => {
-      canvas.height = window.innerHeight;
-      canvas.width = window.innerWidth;
     });
   </script>
 </body>
