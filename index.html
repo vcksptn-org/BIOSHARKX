@@ -61,41 +61,120 @@
       100% { box-shadow: 0 0 10px #00ff00; transform: scale(1); }
     }
 
-/* Kotak terminal */
-#terminal {
-  display: none;
-  position: absolute;
-  bottom: 0;
-  right: -180px; /* 3x lebih ke kanan dari posisi sebelumnya */
-  transform: scale(0.5);
-  width: 70%;
-  max-width: 480px;
-  border: 2px solid #00ff00;
-  padding: 10px 15px;
-  background-color: rgba(0, 0, 0, 0.85);
-  box-shadow: 0 0 18px #00ff00;
-  z-index: 2;
-  line-height: 1.4em;
-  font-size: 14px;
-  opacity: 0;
-  transition: all 1.2s ease;
-  animation: blinkEffect 1.2s infinite alternate;
-}
+    /* Kotak terminal */
+    #terminal {
+      display: none;
+      position: absolute;
+      bottom: 0;
+      right: -180px; /* 3x lebih ke kanan dari posisi sebelumnya */
+      transform: scale(0.5);
+      width: 70%;
+      max-width: 480px;
+      border: 2px solid #00ff00;
+      padding: 10px 15px;
+      background-color: rgba(0, 0, 0, 0.85);
+      box-shadow: 0 0 18px #00ff00;
+      z-index: 2;
+      line-height: 1.4em;
+      font-size: 14px;
+      opacity: 0;
+      transition: all 1.2s ease;
+      animation: blinkEffect 1.2s infinite alternate;
+    }
 
-/* Saat muncul */
-#terminal.show {
-  opacity: 1;
-  transform: scale(0.5);
-  animation: terminalPulse 2s infinite, blinkEffect 1.2s infinite alternate;
-}
+    /* Saat muncul */
+    #terminal.show {
+      opacity: 1;
+      transform: scale(0.5);
+      animation: terminalPulse 2s infinite, blinkEffect 1.2s infinite alternate;
+    }
 
-/* Efek berkedip */
-@keyframes blinkEffect {
-  0% { opacity: 1; filter: brightness(1); }
-  50% { opacity: 0.7; filter: brightness(1.4); }
-  100% { opacity: 1; filter: brightness(1); }
-}
------------------------------
+    /* Efek berkedip */
+    @keyframes blinkEffect {
+      0% { opacity: 1; filter: brightness(1); }
+      50% { opacity: 0.7; filter: brightness(1.4); }
+      100% { opacity: 1; filter: brightness(1); }
+    }
+
+    @keyframes terminalPulse {
+      0% { box-shadow: 0 0 10px #00ff00; }
+      50% { box-shadow: 0 0 20px #00ff00; }
+      100% { box-shadow: 0 0 10px #00ff00; }
+    }
+  </style>
+</head>
+<body>
+  <canvas id="matrix"></canvas>
+
+  <div class="center">
+    <button id="onButton">ON</button>
+  </div>
+
+  <div id="terminal">
+    &gt; Initializing access...<br>
+    &gt; System status: OK<br>
+    &gt; Loading user environment...<br>
+    &gt; Access granted.<br>
+    &gt; Hello, <span class="yellow">Operator</span>. Welcome back.
+  </div>
+
+  <audio id="music" src="boot.mp3" loop></audio>
+
+  <script>
+    // Efek hujan Matrix
+    const canvas = document.getElementById("matrix");
+    const ctx = canvas.getContext("2d");
+
+    canvas.height = window.innerHeight;
+    canvas.width = window.innerWidth;
+
+    const chars = "アァカサタナハマヤャラワガザダバパイィキシチニヒミリヰギジヂビピウゥクスツヌフムユュルグズヅブプエェケセテネヘメレヱゲゼデベペオォコソトノホモヨョロゴゾドボポヴッンABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789";
+    const fontSize = 16;
+    const columns = canvas.width / fontSize;
+    const drops = [];
+
+    for (let x = 0; x < columns; x++) drops[x] = 1;
+
+    function draw() {
+      ctx.fillStyle = "rgba(0, 0, 0, 0.05)";
+      ctx.fillRect(0, 0, canvas.width, canvas.height);
+
+      ctx.fillStyle = "#00ff00";
+      ctx.font = fontSize + "px monospace";
+
+      for (let i = 0; i < drops.length; i++) {
+        const text = chars.charAt(Math.floor(Math.random() * chars.length));
+        ctx.fillText(text, i * fontSize, drops[i] * fontSize);
+
+        if (drops[i] * fontSize > canvas.height && Math.random() > 0.975)
+          drops[i] = 0;
+        drops[i]++;
+      }
+    }
+
+    setInterval(draw, 33);
+
+    // Tombol ON
+    const btn = document.getElementById("onButton");
+    const terminal = document.getElementById("terminal");
+    const music = document.getElementById("music");
+
+    btn.addEventListener("click", () => {
+      music.play().catch(() => console.log("Autoplay blocked"));
+      btn.style.opacity = 0;
+      setTimeout(() => btn.style.display = "none", 800);
+      setTimeout(() => {
+        terminal.style.display = "block";
+        setTimeout(() => terminal.classList.add("show"), 50);
+      }, 1000);
+    });
+
+    window.addEventListener("resize", () => {
+      canvas.height = window.innerHeight;
+      canvas.width = window.innerWidth;
+    });
+  </script>
+
   <!-- Animasi Mengetik -->
   <div id="typingContainer">
     <pre id="typingText"></pre>
@@ -105,7 +184,6 @@
     const typingContainer = document.getElementById("typingContainer");
     const typingText = document.getElementById("typingText");
 
-    // Baris teks animasi
     const codeLines = [
       "function initializeSequence() {",
       "   let system = createConnection('VCKSPTN_CORE');",
@@ -116,10 +194,9 @@
       "   deployMainInterface();"
     ];
 
-    // Atur posisi & tampilan
     typingContainer.style.position = "absolute";
     typingContainer.style.bottom = "10px";
-    typingContainer.style.left = "5px"; // lebih ke kiri
+    typingContainer.style.left = "5px";
     typingContainer.style.zIndex = "2";
     typingContainer.style.fontFamily = "'Courier New', monospace";
     typingContainer.style.fontSize = "7px";
@@ -136,15 +213,14 @@
         if (char < codeLines[line].length) {
           typingText.textContent += codeLines[line][char];
           char++;
-          setTimeout(typeEffect, 15); // kecepatan mengetik
+          setTimeout(typeEffect, 15);
         } else {
-          typingText.textContent += "\n"; // baris baru ke bawah
+          typingText.textContent += "\n";
           line++;
           char = 0;
           setTimeout(typeEffect, 100);
         }
       } else {
-        // Setelah selesai semua baris → ulang dari awal
         setTimeout(() => {
           typingText.textContent = "";
           line = 0;
@@ -154,7 +230,6 @@
       }
     }
 
-    // Jalankan setelah tombol ON ditekan
     btn.addEventListener("click", () => {
       setTimeout(() => {
         typingContainer.style.display = "block";
