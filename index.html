@@ -15,6 +15,7 @@
       color: #00ff00;
     }
 
+    /* Efek hujan Matrix */
     canvas {
       position: fixed;
       top: 0;
@@ -22,6 +23,7 @@
       width: 100%;
       height: 100%;
       z-index: 0;
+      background: black;
     }
 
     /* Tombol ON */
@@ -66,7 +68,7 @@
       display: none;
       position: absolute;
       bottom: 0;
-      right: 380px; /* digeser 3x ke kiri */
+      right: 380px; /* posisi 3x lebih ke kiri */
       transform: scale(0.5);
       width: 70%;
       max-width: 480px;
@@ -98,6 +100,9 @@
 </head>
 <body>
 
+  <!-- Efek Hujan Matrix -->
+  <canvas id="matrix"></canvas>
+
   <!-- Tombol ON -->
   <div class="center">
     <button id="onButton">ON</button>
@@ -112,16 +117,44 @@
   </div>
 
   <!-- Musik -->
-  <audio id="bgMusic" src="https://files.catbox.moe/ilv4vb.mp3"></audio>
+  <audio id="bgMusic" src="https://files.catbox.moe/ilv4vb.mp3" preload="auto"></audio>
 
   <script>
+    /* ---------------- MATRIX RAIN ---------------- */
+    const canvas = document.getElementById("matrix");
+    const ctx = canvas.getContext("2d");
+    canvas.height = window.innerHeight;
+    canvas.width = window.innerWidth;
+
+    const chars = "ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789@#$%^&*";
+    const fontSize = 14;
+    const columns = canvas.width / fontSize;
+    const drops = Array(Math.floor(columns)).fill(1);
+
+    function drawMatrix() {
+      ctx.fillStyle = "rgba(0, 0, 0, 0.05)";
+      ctx.fillRect(0, 0, canvas.width, canvas.height);
+      ctx.fillStyle = "#00ff00";
+      ctx.font = fontSize + "px monospace";
+
+      for (let i = 0; i < drops.length; i++) {
+        const text = chars.charAt(Math.floor(Math.random() * chars.length));
+        ctx.fillText(text, i * fontSize, drops[i] * fontSize);
+
+        if (drops[i] * fontSize > canvas.height && Math.random() > 0.975)
+          drops[i] = 0;
+        drops[i]++;
+      }
+    }
+    setInterval(drawMatrix, 40);
+
+    /* ---------------- TERMINAL + MUSIC ---------------- */
     const btn = document.getElementById("onButton");
     const terminal = document.getElementById("terminal");
     const typingContainer = document.getElementById("typingContainer");
     const typingText = document.getElementById("typingText");
     const music = document.getElementById("bgMusic");
 
-    // Setup teks mengetik
     const codeLines = [
       "function initializeSequence() {",
       "   let system = createConnection('VCKSPTN_CORE');",
@@ -168,19 +201,18 @@
       }
     }
 
-    // Jalankan sistem setelah ON
+    /* ---------------- AKSI SAAT TOMBOL ON ---------------- */
     btn.addEventListener("click", () => {
       btn.style.display = "none";
       terminal.style.display = "block";
       setTimeout(() => terminal.classList.add("show"), 1000);
 
-      // Jalankan musik otomatis
+      // Musik otomatis (dengan fallback interaksi)
       music.volume = 0.5;
       music.play().catch(() => {
-        console.log("Autoplay ditolak, tekan layar untuk mulai musik");
+        document.body.addEventListener("click", () => music.play(), { once: true });
       });
 
-      // Jalankan animasi mengetik
       setTimeout(() => {
         typingContainer.style.display = "block";
         if (!isTyping) {
