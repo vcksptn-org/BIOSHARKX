@@ -1,70 +1,80 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Power Button</title>
-  <style>
-    body {
-      background-color: black;
-      display: flex;
-      justify-content: center;
-      align-items: center;
-      height: 100vh;
-      flex-direction: column;
-      overflow: hidden;
-    }
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Power Button</title>
+<style>
+  body {
+    margin: 0;
+    height: 100vh;
+    background-color: black;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    overflow: hidden;
+  }
 
-    .button {
-      width: 120px;
-      height: 120px;
-      border-radius: 50%;
-      border: 2px solid #00ff00;
-      color: #00ff00;
-      font-size: 20px;
-      display: flex;
-      justify-content: center;
-      align-items: center;
-      cursor: pointer;
-      transition: all 0.3s ease;
-      box-shadow: 0 0 20px #00ff00;
-    }
+  #button {
+    width: 120px;
+    height: 120px;
+    border-radius: 50%;
+    border: 2px solid #00ff00;
+    background-color: black;
+    color: #00ff00;
+    font-size: 22px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    cursor: pointer;
+    box-shadow: 0 0 25px #00ff00;
+    transition: all 0.3s ease;
+  }
 
-    .button:hover {
-      box-shadow: 0 0 40px #00ff00;
-      transform: scale(1.05);
-    }
+  #button:hover {
+    transform: scale(1.1);
+  }
 
-    .welcome {
-      opacity: 0;
-      color: #00ff00;
-      font-size: 32px;
-      margin-top: 30px;
-      animation: fadeIn 2s forwards;
-      animation-delay: 0.5s;
-    }
+  #welcome {
+    color: #00ff00;
+    font-size: 28px;
+    opacity: 0;
+    margin-top: 20px;
+    animation: fadeIn 2s ease forwards;
+    animation-delay: 0.5s;
+  }
 
-    @keyframes fadeIn {
-      from { opacity: 0; transform: translateY(20px); }
-      to { opacity: 1; transform: translateY(0); }
-    }
-  </style>
+  @keyframes fadeIn {
+    from { opacity: 0; transform: translateY(20px); }
+    to { opacity: 1; transform: translateY(0); }
+  }
+</style>
 </head>
 <body>
-  <div class="button" id="powerButton">ON</div>
-  <div class="welcome" id="welcomeText" style="display:none;">Welcome</div>
+  <div id="button">ON</div>
+  <div id="welcome"></div>
 
-  <audio id="bgMusic" src="boot.mp3"></audio>
+  <audio id="bgMusic">
+    <source src="boot.mp3" type="audio/mpeg">
+  </audio>
 
   <script>
-    const button = document.getElementById('powerButton');
-    const music = document.getElementById('bgMusic');
-    const welcomeText = document.getElementById('welcomeText');
+    const button = document.getElementById("button");
+    const welcome = document.getElementById("welcome");
+    const bgMusic = document.getElementById("bgMusic");
 
-    button.addEventListener('click', () => {
-      music.play();
-      button.style.display = 'none';
-      welcomeText.style.display = 'block';
+    button.addEventListener("click", () => {
+      // ubah tampilan tombol
+      button.style.boxShadow = "0 0 60px #00ff00";
+      button.innerText = "ON ✔";
+      
+      // mainkan musik
+      bgMusic.play();
+
+      // tampilkan teks welcome
+      welcome.innerText = "Welcome";
+      welcome.style.opacity = "1";
     });
   </script>
 </body>
