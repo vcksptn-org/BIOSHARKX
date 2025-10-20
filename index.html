@@ -31,6 +31,7 @@
       left: 50%;
       transform: translate(-50%, -50%);
       z-index: 2;
+      animation: fadeInFromBottomRight 2s ease-in-out forwards;
     }
 
     #onButton {
@@ -60,9 +61,18 @@
       50% { box-shadow: 0 0 25px #00ff00; transform: scale(1.05); }
       100% { box-shadow: 0 0 10px #00ff00; transform: scale(1); }
     }
-    
------------------------------------------------
-/* Kotak terminal */
+
+    @keyframes fadeInFromBottomRight {
+      0% {
+        opacity: 0;
+        transform: translate(50%, 50%) scale(0.8);
+      }
+      100% {
+        opacity: 1;
+        transform: translate(-50%, -50%) scale(1);
+      }
+    }
+    /* Kotak terminal */
 #terminal {
   display: none;
   position: absolute;
@@ -88,9 +98,7 @@
   transform: scale(0.3);
   animation: terminalPulse 2s infinite;
 }
--------------------------------------------
-
-    <!-- Animasi Mengetik -->
+  <!-- Animasi Mengetik -->
   <div id="typingContainer">
     <pre id="typingText"></pre>
   </div>
@@ -101,7 +109,7 @@
 
     // Baris teks animasi
     const codeLines = [
-      "   function initializeSequence() {",
+      "function initializeSequence() {",
       "   let system = createConnection('VCKSPTN_CORE');",
       "   system.loadModules(['AI_CORE', 'LINK_HANDLER']);",
       "   system.activate();",
