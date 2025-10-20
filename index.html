@@ -171,6 +171,7 @@
   </script>
 </body>
 </html>
+----------------------------------
 
   <!-- Animasi Mengetik -->
   <div id="typingContainer">
@@ -181,27 +182,33 @@
     const typingContainer = document.getElementById("typingContainer");
     const typingText = document.getElementById("typingText");
 
+    // Baris teks animasi
     const codeLines = [
-      "function connectSystem() {",
-      "    const link = secureConnect('VCKSPTN_MAIN');",
-      "    link.status = 'active';",
-      "    console.log('System linked successfully.');",
+      "function initializeSequence() {",
+      "    let system = createConnection('VCKSPTN_CORE');",
+      "    system.loadModules(['AI_CORE', 'LINK_HANDLER']);",
+      "    system.activate();",
+      "    console.log('SYSTEM ONLINE...');",
+      "    verifyAccess('Operator');",
+      "    deployMainInterface();",
       "}",
       "",
-      "connectSystem();"
+      "initializeSequence();"
     ];
 
     let line = 0, char = 0;
+    let totalChars = 0;
     let isTyping = false;
 
+    // Posisi dan tampilan animasi
     typingContainer.style.position = "absolute";
-    typingContainer.style.bottom = "30px";
-    typingContainer.style.left = "30px";
+    typingContainer.style.bottom = "20px";
+    typingContainer.style.left = "20px";
     typingContainer.style.zIndex = "2";
     typingContainer.style.fontFamily = "'Courier New', monospace";
-    typingContainer.style.fontSize = "10px";
-    typingContainer.style.color = "#00ff00";
-    typingContainer.style.textShadow = "0 0 6px #00ff00";
+    typingContainer.style.fontSize = "7px"; // 2x lebih kecil lagi
+    typingContainer.style.color = "#ffffff"; // warna putih
+    typingContainer.style.textShadow = "0 0 6px #ffffff";
     typingContainer.style.display = "none";
 
     function typeEffect() {
@@ -209,24 +216,29 @@
         if (char < codeLines[line].length) {
           typingText.textContent += codeLines[line][char];
           char++;
-          setTimeout(typeEffect, 35); // kecepatan ketik 2x lebih cepat
+          totalChars++;
+          setTimeout(typeEffect, 15); // 2x lebih cepat
         } else {
           typingText.textContent += "\n";
           line++;
           char = 0;
-          setTimeout(typeEffect, 150);
+          setTimeout(typeEffect, 80);
         }
-      } else {
-        // Ulang setiap 2 menit
+      }
+
+      // Reset setelah mencapai 200 karakter
+      if (totalChars >= 200) {
         setTimeout(() => {
           typingText.textContent = "";
           line = 0;
           char = 0;
+          totalChars = 0;
           typeEffect();
-        }, 120000);
+        }, 500);
       }
     }
 
+    // Mulai setelah tombol ON ditekan
     btn.addEventListener("click", () => {
       setTimeout(() => {
         typingContainer.style.display = "block";
