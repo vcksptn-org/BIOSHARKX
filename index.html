@@ -1,0 +1,66 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>vcksptn</title>
+  <style>
+    body {
+      background-color: #000;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      height: 100vh;
+      margin: 0;
+      overflow: hidden;
+    }
+
+    .button {
+      position: relative;
+      width: 120px;
+      height: 120px;
+      border-radius: 50%;
+      border: 2px solid #00ff00;
+      color: #00ff00;
+      text-align: center;
+      line-height: 120px;
+      font-family: Arial, sans-serif;
+      font-size: 24px;
+      cursor: pointer;
+      box-shadow: 0 0 20px #00ff00;
+      transition: all 0.3s ease;
+    }
+
+    .button:hover {
+      box-shadow: 0 0 40px #00ff00, 0 0 80px #00ff00;
+      transform: scale(1.1);
+    }
+
+    .button:active {
+      background-color: #00ff00;
+      color: #000;
+      box-shadow: 0 0 60px #00ff00;
+    }
+
+    /* Animasi "glow" berdenyut */
+    @keyframes pulse {
+      0% { box-shadow: 0 0 10px #00ff00; }
+      50% { box-shadow: 0 0 25px #00ff00; }
+      100% { box-shadow: 0 0 10px #00ff00; }
+    }
+
+    .button {
+      animation: pulse 1.5s infinite;
+    }
+  </style>
+</head>
+<body>
+  <div class="button" onclick="enterSite()">ON</div>
+
+  <script>
+    function enterSite() {
+      window.location.href = "main.html"; // ganti ke halaman utama blog kamu nanti
+    }
+  </script>
+</body>
+</html>
