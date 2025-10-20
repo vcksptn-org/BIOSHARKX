@@ -1,21 +1,20 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Matrix System</title>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>VCKSPTN Start</title>
   <style>
     body {
       margin: 0;
       overflow: hidden;
       background: black;
-      font-family: monospace;
-      color: #00ff00;
       display: flex;
       justify-content: center;
       align-items: center;
       height: 100vh;
-      flex-direction: column;
+      color: #00ff00;
+      font-family: "Courier New", monospace;
     }
 
     canvas {
@@ -27,55 +26,54 @@
       z-index: 0;
     }
 
-    /* Tombol ON kecil */
-    .on-button {
+    .button-container {
       position: relative;
-      border: 2px solid #00ff00;
-      border-radius: 50%;
-      background: transparent;
-      color: #00ff00;
-      font-size: 14px;
-      padding: 15px 20px;
-      cursor: pointer;
-      box-shadow: 0 0 15px #00ff00;
-      transition: all 0.3s ease;
       z-index: 2;
     }
 
-    .on-button:hover {
-      transform: scale(1.1);
-      box-shadow: 0 0 25px #00ff00;
+    button {
+      background: none;
+      border: 2px solid #00ff00;
+      color: #00ff00;
+      font-size: 18px;
+      border-radius: 50%;
+      width: 70px;
+      height: 70px;
+      cursor: pointer;
+      transition: all 0.3s ease;
+      text-shadow: 0 0 10px #00ff00;
     }
 
-    /* Welcome text */
-    #welcome {
-      display: none;
+    button:hover {
+      background: #00ff00;
+      color: black;
+      box-shadow: 0 0 20px #00ff00;
+    }
+
+    .welcome {
       position: absolute;
       font-size: 24px;
-      letter-spacing: 2px;
-      color: #00ff00;
-      text-shadow: 0 0 20px #00ff00;
-      animation: fadeInOut 2s ease forwards;
-      z-index: 2;
-    }
-
-    @keyframes fadeInOut {
-      0% { opacity: 0; transform: scale(0.9); }
-      20% { opacity: 1; transform: scale(1); }
-      80% { opacity: 1; transform: scale(1); }
-      100% { opacity: 0; transform: scale(0.9); }
+      text-shadow: 0 0 10px #00ff00;
+      opacity: 0;
+      transition: opacity 0.5s ease;
+      z-index: 3;
     }
   </style>
 </head>
 <body>
   <canvas id="matrix"></canvas>
-  <button class="on-button" id="onButton">ON</button>
-  <div id="welcome">WELCOME</div>
+  <div class="button-container">
+    <button id="onButton">ON</button>
+    <div class="welcome" id="welcomeText">WELCOME</div>
+  </div>
 
-  <audio id="bootSound" src="boot.mp3"></audio>
+  <!-- Musik -->
+  <audio id="bootSound" preload="auto">
+    <source src="matrix.mp3" type="audio/mpeg">
+  </audio>
 
   <script>
-    // Efek hujan Matrix
+    // Matrix rain
     const canvas = document.getElementById("matrix");
     const ctx = canvas.getContext("2d");
     canvas.height = window.innerHeight;
@@ -100,28 +98,31 @@
     }
     setInterval(drawMatrix, 35);
 
-    // Tombol ON
-    const btn = document.getElementById("onButton");
-    const welcome = document.getElementById("welcome");
+    // Tombol dan musik
+    const button = document.getElementById("onButton");
+    const welcomeText = document.getElementById("welcomeText");
     const sound = document.getElementById("bootSound");
 
-    btn.addEventListener("click", async () => {
-      btn.style.opacity = "0";
-      btn.style.transform = "scale(0.8)";
-      setTimeout(() => (btn.style.display = "none"), 300);
+    button.addEventListener("click", async () => {
+      button.style.display = "none";
+      welcomeText.style.opacity = "1";
 
-      // Play musik (opsional)
-      try { await sound.play(); } catch (e) { console.warn("Musik gagal diputar:", e); }
+      // mainkan musik
+      try {
+        await sound.play();
+      } catch (err) {
+        console.warn("Musik gagal diputar:", err);
+      }
 
-      // Tampilkan Welcome 2 detik lalu redirect
-      welcome.style.display = "block";
       setTimeout(() => {
-        welcome.style.display = "none";
-        window.location.href = "home.html"; // Ganti sesuai halaman utama kamu
+        welcomeText.style.opacity = "0";
+      }, 1500);
+
+      setTimeout(() => {
+        window.location.href = "home.html";
       }, 2000);
     });
 
-    // Resize responsif
     window.addEventListener("resize", () => {
       canvas.height = window.innerHeight;
       canvas.width = window.innerWidth;
