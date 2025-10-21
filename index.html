@@ -1,68 +1,106 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Cyberpunk Interface</title>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>VCKSPTN | Cyberpunk Access</title>
+
   <style>
-    body {
+    /* ===== RESET & BACKGROUND ===== */
+    html, body {
       margin: 0;
-      height: 100vh;
-      background: radial-gradient(circle at center, #0a0a0a 20%, #000 80%);
-      overflow: hidden;
-      color: #00ffc3;
-      font-family: 'Courier New', monospace;
-      display: flex;
-      justify-content: center;
-      align-items: center;
-    }
-
-    .neon-button {
-      border: 2px solid #00ffc3;
-      padding: 20px 40px;
-      font-size: 1.5em;
-      letter-spacing: 2px;
-      color: #00ffc3;
-      text-transform: uppercase;
-      text-shadow: 0 0 10px #00ffc3;
-      position: relative;
-      cursor: pointer;
-      animation: pulse 2s infinite, glitch 2.5s infinite;
-    }
-
-    @keyframes pulse {
-      0%, 100% { box-shadow: 0 0 10px #00ffc3, inset 0 0 10px #00ffc3; }
-      50% { box-shadow: 0 0 25px #00ffc3, inset 0 0 20px #00ffc3; }
-    }
-
-    @keyframes glitch {
-      0% { transform: translate(0); }
-      20% { transform: translate(-2px, 2px); }
-      40% { transform: translate(2px, -2px); }
-      60% { transform: translate(-2px, -1px); }
-      80% { transform: translate(2px, 1px); }
-      100% { transform: translate(0); }
-    }
-
-    .scanline {
-      position: absolute;
-      top: 0;
-      left: 0;
-      width: 100%;
+      padding: 0;
       height: 100%;
-      background: repeating-linear-gradient(transparent, transparent 2px, rgba(0, 255, 195, 0.05) 3px);
-      pointer-events: none;
-      animation: moveScan 5s linear infinite;
+      overflow: hidden;
+      font-family: "Orbitron", sans-serif;
+      background: url('A_digital_painting_in_cyberpunk_and_sci-fi/fantasy.png') no-repeat center center/cover;
+      color: #00ffcc;
+      display: flex;
+      align-items: center;
+      justify-content: center;
     }
 
-    @keyframes moveScan {
-      from { transform: translateY(-100%); }
-      to { transform: translateY(100%); }
+    /* ===== FADE IN PAGE ===== */
+    body {
+      animation: fadeIn 2s ease-in forwards;
+    }
+    @keyframes fadeIn {
+      from { opacity: 0; }
+      to { opacity: 1; }
+    }
+
+    /* ===== NEON BUTTON ===== */
+    .neon-button {
+      width: 150px;
+      height: 150px;
+      border-radius: 50%;
+      background: radial-gradient(circle, #0f0 20%, #060 60%, transparent 80%);
+      box-shadow: 0 0 20px #0f0, 0 0 40px #0f0;
+      border: 3px solid #0f0;
+      cursor: pointer;
+      animation: colorShift 3s infinite;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 1.2em;
+      text-shadow: 0 0 10px #fff;
+      transition: transform 0.2s;
+    }
+
+    .neon-button:hover {
+      transform: scale(1.1);
+    }
+
+    @keyframes colorShift {
+      0% {
+        border-color: #0f0;
+        box-shadow: 0 0 20px #0f0, 0 0 40px #0f0;
+        color: #0f0;
+      }
+      50% {
+        border-color: #f00;
+        box-shadow: 0 0 20px #f00, 0 0 40px #f00;
+        color: #f00;
+      }
+      100% {
+        border-color: #0f0;
+        box-shadow: 0 0 20px #0f0, 0 0 40px #0f0;
+        color: #0f0;
+      }
+    }
+
+    /* ===== RESPONSIVE ===== */
+    @media (max-width: 768px) {
+      .neon-button {
+        width: 120px;
+        height: 120px;
+        font-size: 1em;
+      }
+    }
+
+    /* ===== BACKGROUND GLOW OVERLAY ===== */
+    .overlay {
+      position: absolute;
+      inset: 0;
+      background: rgba(0, 0, 0, 0.4);
+      z-index: 0;
     }
   </style>
 </head>
+
 <body>
-  <div class="neon-button">Access</div>
-  <div class="scanline"></div>
+  <div class="overlay"></div>
+  <button class="neon-button" onclick="redirectToStorage()">ACCESS</button>
+
+  <!-- ===== MUSIC ===== -->
+  <audio autoplay loop>
+    <source src="https://files.freemusicarchive.org/storage-freemusicarchive-org/music/ccCommunity/White_Bat_Audio/White_Bat_Audio_-_Neon_Skies/White_Bat_Audio_-_Neon_Skies.mp3" type="audio/mpeg">
+  </audio>
+
+  <script>
+    function redirectToStorage() {
+      window.location.href = "https://dfsjotpribiupxmsmdce.supabase.co/storage/v1/object/public/Vckspn/";
+    }
+  </script>
 </body>
 </html>
