@@ -3,140 +3,6 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Matrix Power</title>
-  <style>
-    body {
-      margin: 0;
-      padding: 0;
-      overflow: hidden;
-      background-color: black;
-      display: flex;
-      justify-content: center;
-      align-items: center;
-      height: 100vh;
-      flex-direction: column;
-      font-family: monospace;
-      color: limegreen;
-    }
-
-    canvas {
-      position: fixed;
-      top: 0;
-      left: 0;
-      width: 100%;
-      height: 100%;
-      z-index: 0;
-      display: block;
-    }
-
-    .button {
-      width: 120px;
-      height: 120px;
-      border-radius: 50%;
-      border: 2px solid limegreen;
-      background-color: black;
-      color: limegreen;
-      font-size: 22px;
-      font-weight: bold;
-      cursor: pointer;
-      box-shadow: 0 0 20px limegreen;
-      transition: all 0.4s ease;
-      z-index: 1;
-    }
-
-    .button:hover {
-      box-shadow: 0 0 35px limegreen;
-      transform: scale(1.05);
-    }
-
-    #mainContent {
-      display: none;
-      z-index: 1;
-      color: limegreen;
-      font-size: 36px;
-      text-align: center;
-    }
-  </style>
-</head>
-<body>
-  <canvas id="matrix"></canvas>
-  <button class="button" id="powerButton">ON</button>
-
-  <audio id="music" src="boot.mp3"></audio>
-
-  <div id="mainContent">
-    <h1></h1>
-  </div>
-
-  <script>
-    const button = document.getElementById('powerButton');
-    const canvas = document.getElementById('matrix');
-    const ctx = canvas.getContext('2d');
-    const music = document.getElementById('music');
-    const mainContent = document.getElementById('mainContent');
-
-    // Atur ukuran canvas sesuai layar
-    canvas.width = window.innerWidth;
-    canvas.height = window.innerHeight;
-
-    // Efek hujan Matrix langsung aktif
-    const letters = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789';
-    const fontSize = 16;
-    const columns = canvas.width / fontSize;
-    const drops = Array(Math.floor(columns)).fill(1);
-
-    function drawMatrix() {
-      ctx.fillStyle = 'rgba(0, 0, 0, 0.05)';
-      ctx.fillRect(0, 0, canvas.width, canvas.height);
-      ctx.fillStyle = '#0F0';
-      ctx.font = fontSize + 'px monospace';
-
-      for (let i = 0; i < drops.length; i++) {
-        const text = letters.charAt(Math.floor(Math.random() * letters.length));
-        ctx.fillText(text, i * fontSize, drops[i] * fontSize);
-
-        if (drops[i] * fontSize > canvas.height && Math.random() > 0.975) {
-          drops[i] = 0;
-        }
-        drops[i]++;
-      }
-    }
-
-    setInterval(drawMatrix, 33);
-
-    // Jalankan musik & tampilkan konten utama setelah klik ON
-    button.addEventListener('click', () => {
-      music.volume = 0.6;
-      music.play();
-
-      // Tombol menghilang dengan animasi
-      button.style.opacity = '0';
-      button.style.transform = 'scale(0.8)';
-
-      setTimeout(() => {
-        button.style.display = 'none';
-        mainContent.style.display = 'block';
-      }, 500);
-    });
-
-    // Resize canvas saat layar berubah
-    window.addEventListener('resize', () => {
-      canvas.width = window.innerWidth;
-      canvas.height = window.innerHeight;
-    });
-  </script>
-</body>
-</html>
-
-
-
-
-
-<!DOCTYPE html>
-<html lang="en">
-<head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>VCKSPTN SYSTEM</title>
   <style>
     html, body {
@@ -158,7 +24,7 @@
       z-index: 0;
     }
 
-    /* Tombol ON berbentuk lingkaran berdenyut */
+    /* Tombol ON */
     .center {
       position: absolute;
       top: 50%;
@@ -168,48 +34,63 @@
     }
 
     #onButton {
-      width: 140px;
-      height: 140px;
+      width: 70px;
+      height: 70px;
       border-radius: 50%;
-      border: 3px solid #00ff00;
+      border: 2px solid #00ff00;
       background: black;
       color: #00ff00;
-      font-size: 24px;
+      font-size: 18px;
       letter-spacing: 2px;
       cursor: pointer;
-      box-shadow: 0 0 25px #00ff00;
+      box-shadow: 0 0 15px #00ff00;
       transition: all 0.4s ease;
-      text-shadow: 0 0 10px #00ff00;
+      text-shadow: 0 0 8px #00ff00;
       animation: pulse 1.8s infinite;
     }
 
     #onButton:hover {
       background: #00ff00;
       color: black;
-      box-shadow: 0 0 35px #00ff00;
+      box-shadow: 0 0 25px #00ff00;
     }
 
     @keyframes pulse {
-      0% { box-shadow: 0 0 15px #00ff00; }
-      50% { box-shadow: 0 0 40px #00ff00; }
-      100% { box-shadow: 0 0 15px #00ff00; }
+      0% { box-shadow: 0 0 10px #00ff00; transform: scale(1); }
+      50% { box-shadow: 0 0 25px #00ff00; transform: scale(1.05); }
+      100% { box-shadow: 0 0 10px #00ff00; transform: scale(1); }
     }
 
+    /* Kotak terminal */
     #terminal {
       display: none;
       position: absolute;
-      top: 60px;
+      top: 40px;
       left: 50%;
-      transform: translateX(-50%);
-      width: 80%;
-      max-width: 600px;
+      transform: translateX(-50%) scale(0.9);
+      width: 70%;
+      max-width: 480px;
       border: 2px solid #00ff00;
-      padding: 15px 20px;
-      background-color: rgba(0, 0, 0, 0.7);
-      box-shadow: 0 0 15px #00ff00;
+      padding: 10px 15px;
+      background-color: rgba(0, 0, 0, 0.75);
+      box-shadow: 0 0 12px #00ff00;
       z-index: 2;
-      line-height: 1.5em;
-      font-size: 16px;
+      line-height: 1.4em;
+      font-size: 14px;
+      opacity: 0;
+      transition: all 1.2s ease;
+    }
+
+    #terminal.show {
+      opacity: 1;
+      transform: translateX(-50%) scale(1);
+      animation: terminalPulse 2s infinite;
+    }
+
+    @keyframes terminalPulse {
+      0% { box-shadow: 0 0 10px #00ff00; }
+      50% { box-shadow: 0 0 20px #00ff00; }
+      100% { box-shadow: 0 0 10px #00ff00; }
     }
 
     .yellow {
@@ -279,12 +160,85 @@
       setTimeout(() => btn.style.display = "none", 800);
       setTimeout(() => {
         terminal.style.display = "block";
+        setTimeout(() => terminal.classList.add("show"), 50);
       }, 1000);
     });
 
     window.addEventListener("resize", () => {
       canvas.height = window.innerHeight;
       canvas.width = window.innerWidth;
+    });
+  </script>
+</body>
+</html>
+
+  <!-- Animasi Mengetik -->
+  <div id="typingContainer">
+    <pre id="typingText"></pre>
+  </div>
+
+  <script>
+    const typingContainer = document.getElementById("typingContainer");
+    const typingText = document.getElementById("typingText");
+
+    // Baris teks animasi
+    const codeLines = [
+      "function initializeSequence() {",
+      "   let system = createConnection('VCKSPTN_CORE');",
+      "   system.loadModules(['AI_CORE', 'LINK_HANDLER']);",
+      "   system.activate();",
+      "   console.log('SYSTEM ONLINE...');",
+      "   verifyAccess('Operator');",
+      "   deployMainInterface();"
+    ];
+
+    // Atur posisi & tampilan
+    typingContainer.style.position = "absolute";
+    typingContainer.style.bottom = "10px";
+    typingContainer.style.left = "5px"; // lebih ke kiri
+    typingContainer.style.zIndex = "2";
+    typingContainer.style.fontFamily = "'Courier New', monospace";
+    typingContainer.style.fontSize = "7px";
+    typingContainer.style.color = "#ffffff";
+    typingContainer.style.textShadow = "0 0 6px #ffffff";
+    typingContainer.style.display = "none";
+    typingContainer.style.whiteSpace = "pre";
+
+    let line = 0, char = 0;
+    let isTyping = false;
+
+    function typeEffect() {
+      if (line < codeLines.length) {
+        if (char < codeLines[line].length) {
+          typingText.textContent += codeLines[line][char];
+          char++;
+          setTimeout(typeEffect, 15); // kecepatan mengetik
+        } else {
+          typingText.textContent += "\n"; // baris baru ke bawah
+          line++;
+          char = 0;
+          setTimeout(typeEffect, 100);
+        }
+      } else {
+        // Setelah selesai semua baris → ulang dari awal
+        setTimeout(() => {
+          typingText.textContent = "";
+          line = 0;
+          char = 0;
+          typeEffect();
+        }, 500);
+      }
+    }
+
+    // Jalankan setelah tombol ON ditekan
+    btn.addEventListener("click", () => {
+      setTimeout(() => {
+        typingContainer.style.display = "block";
+        if (!isTyping) {
+          isTyping = true;
+          typeEffect();
+        }
+      }, 2500);
     });
   </script>
 </body>
