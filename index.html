@@ -1,394 +1,200 @@
-<!<!DOCTYPE html>
+<!doctype html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>VCKSPTN SYSTEM</title>
-  <style>
-    html, body {
-      margin: 0;
-      padding: 0;
-      height: 100%;
-      overflow: hidden;
-      background: black;
-      font-family: "Courier New", monospace;
-      color: #00ff00;
-    }
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width,initial-scale=1" />
+<title>VCKSPTN — Welcome</title>
+<style>
+  /* Basic reset */
+  *{box-sizing:border-box;margin:0;padding:0}
+  html,body{height:100%}
+  body{
+    background:black;
+    color:#00ff6b;
+    font-family: "Courier New", monospace;
+    overflow:hidden;
+  }
 
-    canvas {
-      position: fixed;
-      top: 0;
-      left: 0;
-      width: 100%;
-      height: 100%;
-      z-index: 0;
-    }
+  /* matrix canvas full */
+  #matrixCanvas{
+    position:fixed;
+    inset:0;
+    z-index:0;
+    background:#000;
+  }
 
-    /* Tombol ON */
-    .center {
-      position: absolute;
-      top: 50%;
-      left: 50%;
-      transform: translate(-50%, -50%);
-      z-index: 2;
-    }
+  /* center content */
+  .ui {
+    position:relative;
+    z-index:3;
+    height:100vh;
+    display:flex;
+    align-items:flex-end;
+    justify-content:center;
+    padding-bottom:90px;
+    flex-direction:column;
+    gap:18px;
+    text-align:center;
+  }
 
-    #onButton {
-      width: 70px;
-      height: 70px;
-      border-radius: 50%;
-      border: 2px solid #00ff00;
-      background: black;
-      color: #00ff00;
-      font-size: 18px;
-      letter-spacing: 2px;
-      cursor: pointer;
-      box-shadow: 0 0 15px #00ff00;
-      transition: all 0.4s ease;
-      text-shadow: 0 0 8px #00ff00;
-      animation: pulse 1.8s infinite;
-    }
+  h1 {
+    color:#00ff6b;
+    letter-spacing:6px;
+    text-shadow:0 0 18px rgba(0,255,107,0.12);
+    font-weight:700;
+    font-size:22px;
+  }
 
-    #onButton:hover {
-      background: #00ff00;
-      color: black;
-      box-shadow: 0 0 25px #00ff00;
-    }
+  .terminal-box {
+    width:320px;
+    max-width:88vw;
+    border:2px solid rgba(0,255,107,0.18);
+    padding:14px;
+    border-radius:8px;
+    background:linear-gradient(180deg, rgba(0,0,0,0.6), rgba(0,0,0,0.4));
+    box-shadow:0 0 30px rgba(0,255,107,0.06);
+    display:flex;
+    gap:12px;
+    align-items:center;
+    justify-content:space-between;
+  }
 
-    @keyframes pulse {
-      0% { box-shadow: 0 0 10px #00ff00; transform: scale(1); }
-      50% { box-shadow: 0 0 25px #00ff00; transform: scale(1.05); }
-      100% { box-shadow: 0 0 10px #00ff00; transform: scale(1); }
-    }
+  .terminal-text {
+    text-align:left;
+    font-size:13px;
+    line-height:1.2;
+    color:#b7ffcf;
+  }
 
-    /* Kotak terminal (pojok kanan bawah dan diperkecil setengah ukuran) */
-    #terminal {
-      display: none;
-      position: absolute;
-      bottom: 10px;
-      right: 10px;
-      transform: scale(0.5);
-      transform-origin: bottom right;
-      width: 70%;
-      max-width: 480px;
-      border: 2px solid #00ff00;
-      padding: 10px 15px;
-      background-color: rgba(0, 0, 0, 0.75);
-      box-shadow: 0 0 12px #00ff00;
-      z-index: 2;
-      line-height: 1.4em;
-      font-size: 14px;
-      opacity: 0;
-      transition: opacity 1.2s ease, transform 1.0s ease;
-    }
+  /* on button */
+  .on-btn {
+    width:72px;
+    height:72px;
+    border-radius:50%;
+    background:linear-gradient(180deg,#00ff6b,#00c87a);
+    box-shadow:0 0 18px rgba(0,255,107,0.35), inset 0 -4px 6px rgba(0,0,0,0.15);
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    cursor:pointer;
+    transform:scale(1);
+    transition: transform .12s ease;
+    animation: pulse 1.6s infinite;
+  }
+  .on-btn:active{ transform:scale(.96) }
+  .on-btn span{ color:#00220b; font-weight:700; font-size:14px; letter-spacing:1px; }
 
-    #terminal.show {
-      opacity: 1;
-      transform: scale(0.5);
-      animation: terminalPulse 2s infinite;
-    }
+  @keyframes pulse {
+    0%{ box-shadow:0 0 8px rgba(0,255,107,0.25)}
+    50%{ box-shadow:0 0 40px rgba(0,255,107,0.6); transform:scale(1.03)}
+    100%{ box-shadow:0 0 8px rgba(0,255,107,0.25); transform:scale(1)}
+  }
 
-    @keyframes terminalPulse {
-      0%   { box-shadow: 0 0 10px #00ff00; filter: none; }
-      50%  { box-shadow: 0 0 20px #00ff00; filter: brightness(1.1); }
-      100% { box-shadow: 0 0 10px #00ff00; filter: none; }
-    }
-  </style>
+  /* hidden to shown transition */
+  .fadeOut {
+    animation: fadeOut .6s forwards;
+  }
+  .fadeIn {
+    animation: fadeIn .6s forwards;
+  }
+  @keyframes fadeOut { to { opacity:0; transform:translateY(12px) } }
+  @keyframes fadeIn { from { opacity:0; transform:translateY(12px) } to { opacity:1; transform:none } }
+
+  footer {
+    position:fixed;
+    bottom:10px;
+    left:10px;
+    font-size:11px;
+    color:rgba(0,255,107,0.35);
+  }
+
+  /* small hint */
+  .hint{ font-size:12px; color:#9bffcf; opacity:.9; margin-top:6px }
+</style>
 </head>
 <body>
-  <canvas id="matrix"></canvas>
+<canvas id="matrixCanvas"></canvas>
 
-  <div class="center">
-    <button id="onButton">ON</button>
+<div class="ui" id="ui">
+  <div class="terminal-box" id="welcomeBox">
+    <div class="terminal-text">
+      <div style="font-weight:700">BioShark — Matrix Gateway</div>
+      <div style="font-size:12px; opacity:.9; margin-top:6px">Press ON to initiate connection</div>
+    </div>
+
+    <div class="on-btn" id="onBtn" title="ON">
+      <span>ON</span>
+    </div>
   </div>
 
-  <div id="terminal">
-    &gt; Initializing access...<br>
-    &gt; System status: OK<br>
-    &gt; Loading user environment...<br>
-    &gt; Access granted.<br>
-    &gt; Hello, <span class="yellow">Operator</span>. Welcome back.
-  </div>
+  <h1 id="statusText" style="opacity:0">Initializing...</h1>
+  <div class="hint" id="hint" style="opacity:0">Welcome Operator. Press the terminal on the next screen to begin.</div>
+</div>
 
-  <!-- Animasi Mengetik -->
-  <div id="typingContainer">
-    <pre id="typingText"></pre>
-  </div>
+<footer>vckspn-org.github.io</footer>
 
-  <audio id="music" src="boot.mp3" loop></audio>
+<audio id="bgMusic" loop preload="auto">
+  <!-- Optional: replace source with your own mp3 url or local file -->
+  <source src="https://cdn.pixabay.com/download/audio/2021/08/04/audio_ba1bb0e9ec.mp3?filename=cyberpunk-ambient-11280.mp3" type="audio/mpeg">
+</audio>
 
-  <script>
-    // --- Efek hujan Matrix ---
-    const canvas = document.getElementById("matrix");
-    const ctx = canvas.getContext("2d");
+<script>
+/* Matrix effect - lightweight */
+const canvas = document.getElementById('matrixCanvas');
+const ctx = canvas.getContext('2d');
+let w = canvas.width = innerWidth;
+let h = canvas.height = innerHeight;
+const cols = Math.floor(w / 14);
+const ypos = Array(cols).fill(0);
 
-    canvas.height = window.innerHeight;
-    canvas.width = window.innerWidth;
-
-    const chars = "アァカサタナハマヤャラワガザダバパイィキシチニヒミリヰギジヂビピウゥクスツヌフムユュルグズヅブプエェケセテネヘメレヱゲゼデベペオォコソトノホモヨョロゴゾドボポABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789";
-    const fontSize = 16;
-    const columns = canvas.width / fontSize;
-    const drops = [];
-    for (let x = 0; x < columns; x++) drops[x] = 1;
-
-    function draw() {
-      ctx.fillStyle = "rgba(0, 0, 0, 0.05)";
-      ctx.fillRect(0, 0, canvas.width, canvas.height);
-      ctx.fillStyle = "#00ff00";
-      ctx.font = fontSize + "px monospace";
-      for (let i = 0; i < drops.length; i++) {
-        const text = chars.charAt(Math.floor(Math.random() * chars.length));
-        ctx.fillText(text, i * fontSize, drops[i] * fontSize);
-        if (drops[i] * fontSize > canvas.height && Math.random() > 0.975)
-          drops[i] = 0;
-        drops[i]++;
-      }
-    }
-    setInterval(draw, 33);
-
-    // --- Tombol ON & Terminal ---
-    const btn = document.getElementById("onButton");
-    const terminal = document.getElementById("terminal");
-    const music = document.getElementById("music");
-
-    btn.addEventListener("click", () => {
-      music.play().catch(() => console.log("Autoplay blocked"));
-      btn.style.opacity = 0;
-      setTimeout(() => btn.style.display = "none", 800);
-      setTimeout(() => {
-        terminal.style.display = "block";
-        setTimeout(() => terminal.classList.add("show"), 50);
-      }, 1000);
-
-      // Mulai animasi mengetik setelah terminal muncul
-      setTimeout(() => {
-        typingContainer.style.display = "block";
-        if (!isTyping) {
-          isTyping = true;
-          typeEffect();
-        }
-      }, 2500);
-    });
-
-    // --- Animasi Mengetik ---
-    const typingContainer = document.getElementById("typingContainer");
-    const typingText = document.getElementById("typingText");
-    const codeLines = [
-      "function initializeSequence() {",
-      "   let system = createConnection('VCKSPTN_CORE');",
-      "   system.loadModules(['AI_CORE', 'LINK_HANDLER']);",
-      "   system.activate();",
-      "   console.log('SYSTEM ONLINE...');",
-      "   verifyAccess('Operator');",
-      "   deployMainInterface();"
-    ];
-
-    typingContainer.style.position = "absolute";
-    typingContainer.style.bottom = "10px";
-    typingContainer.style.left = "5px";
-    typingContainer.style.zIndex = "2";
-    typingContainer.style.fontFamily = "'Courier New', monospace";
-    typingContainer.style.fontSize = "7px";
-    typingContainer.style.color = "#ffffff";
-    typingContainer.style.textShadow = "0 0 6px #ffffff";
-    typingContainer.style.display = "none";
-    typingContainer.style.whiteSpace = "pre";
-
-    let line = 0, char = 0;
-    let isTyping = false;
-
-    function typeEffect() {
-      if (line < codeLines.length) {
-        if (char < codeLines[line].length) {
-          typingText.textContent += codeLines[line][char];
-          char++;
-          setTimeout(typeEffect, 15);
-        } else {
-          typingText.textContent += "\n";
-          line++;
-          char = 0;
-          setTimeout(typeEffect, 100);
-        }
-      } else {
-        setTimeout(() => {
-          typingText.textContent = "";
-          line = 0;
-          char = 0;
-          typeEffect();
-        }, 500);
-      }
-    }
-
-    window.addEventListener("resize", () => {
-      canvas.height = window.innerHeight;
-      canvas.width = window.innerWidth;
-    });
-  </script>
-</body>
-</html> html>
-<html lang="en">
-<head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>VCKSPTN SYSTEM</title>
-  <style>
-    html, body {
-      margin: 0;
-      padding: 0;
-      height: 100%;
-      overflow: hidden;
-      background: black;
-      font-family: "Courier New", monospace;
-      color: #00ff00;
-    }
-
-    canvas {
-      position: fixed;
-      top: 0;
-      left: 0;
-      width: 100%;
-      height: 100%;
-      z-index: 0;
-    }
-
-    /* Tombol ON */
-    .center {
-      position: absolute;
-      top: 50%;
-      left: 50%;
-      transform: translate(-50%, -50%);
-      z-index: 2;
-    }
-
-    #onButton {
-      width: 70px;
-      height: 70px;
-      border-radius: 50%;
-      border: 2px solid #00ff00;
-      background: black;
-      color: #00ff00;
-      font-size: 18px;
-      letter-spacing: 2px;
-      cursor: pointer;
-      box-shadow: 0 0 15px #00ff00;
-      transition: all 0.4s ease;
-      text-shadow: 0 0 8px #00ff00;
-      animation: pulse 1.8s infinite;
-    }
-
-    #onButton:hover {
-      background: #00ff00;
-      color: black;
-      box-shadow: 0 0 25px #00ff00;
-    }
-
-    @keyframes pulse {
-      0% { box-shadow: 0 0 10px #00ff00; transform: scale(1); }
-      50% { box-shadow: 0 0 25px #00ff00; transform: scale(1.05); }
-      100% { box-shadow: 0 0 10px #00ff00; transform: scale(1); }
-    }
-
-    /* Kotak terminal (pojok kanan bawah dan diperkecil setengah ukuran) */
-#terminal {
-  display: none;
-  position: absolute;
-  bottom: 10px;          /* lebih mepet ke bawah */
-  right: 10px;           /* lebih mepet ke kanan */
-  transform: scale(0.5); /* ukuran setengah dari semula */
-  transform-origin: bottom right; /* mengecil dari pojok kanan bawah */
-  width: 70%;
-  max-width: 480px;
-  border: 2px solid #00ff00;
-  padding: 10px 15px;
-  background-color: rgba(0, 0, 0, 0.75);
-  box-shadow: 0 0 12px #00ff00;
-  z-index: 2;
-  line-height: 1.4em;
-  font-size: 14px;
-  opacity: 0;
-  transition: all 1.2s ease;
+function matrixLoop(){
+  ctx.fillStyle = 'rgba(0,0,0,0.06)';
+  ctx.fillRect(0,0,w,h);
+  ctx.fillStyle = '#00ff6b';
+  ctx.font = '14px monospace';
+  for (let i=0;i<ypos.length;i++){
+    const text = String.fromCharCode(0x30A0 + Math.random()*96);
+    ctx.fillText(text, i*14, ypos[i]*14);
+    if (ypos[i]*14 > h && Math.random() > 0.975) ypos[i]=0;
+    ypos[i]++;
+  }
+  requestAnimationFrame(matrixLoop);
 }
+matrixLoop();
+addEventListener('resize', ()=>{ w=canvas.width=innerWidth; h=canvas.height=innerHeight; });
 
-#terminal.show {
-  opacity: 1;
-  transform: scale(0.5);
-  animation: terminalPulse 2s infinite;
-}
+/* UI interactions */
+const onBtn = document.getElementById('onBtn');
+const welcomeBox = document.getElementById('welcomeBox');
+const statusText = document.getElementById('statusText');
+const hint = document.getElementById('hint');
+const bgMusic = document.getElementById('bgMusic');
 
-/* Saat muncul */
-#terminal.show {
-  opacity: 1;
-  transform: scale(0.5);
-  animation: terminalPulse 2s infinite;
-}
-  <!-- Animasi Mengetik -->
-  <div id="typingContainer">
-    <pre id="typingText"></pre>
-  </div>
+onBtn.addEventListener('click', async () => {
+  // sound
+  try { bgMusic.currentTime = 0; bgMusic.volume = 0.18; bgMusic.play(); } catch(e){}
 
-  <script>
-    const typingContainer = document.getElementById("typingContainer");
-    const typingText = document.getElementById("typingText");
+  // animate
+  onBtn.classList.add('fadeOut');
+  welcomeBox.classList.add('fadeOut');
+  statusText.textContent = 'Initializing access...';
+  statusText.style.opacity = 1;
+  statusText.classList.add('fadeIn');
 
-    // Baris teks animasi
-    const codeLines = [
-      "function initializeSequence() {",
-      "   let system = createConnection('VCKSPTN_CORE');",
-      "   system.loadModules(['AI_CORE', 'LINK_HANDLER']);",
-      "   system.activate();",
-      "   console.log('SYSTEM ONLINE...');",
-      "   verifyAccess('Operator');",
-      "   deployMainInterface();"
-    ];
+  // small staged messages
+  await delay(700);
+  statusText.textContent = 'System status: OK';
+  await delay(700);
+  statusText.textContent = 'Loading user environment...';
+  await delay(900);
+  statusText.textContent = 'Access granted. Redirecting...';
 
-    // Atur posisi & tampilan
-    typingContainer.style.position = "absolute";
-    typingContainer.style.bottom = "10px";
-    typingContainer.style.left = "5px"; // lebih ke kiri
-    typingContainer.style.zIndex = "2";
-    typingContainer.style.fontFamily = "'Courier New', monospace";
-    typingContainer.style.fontSize = "7px";
-    typingContainer.style.color = "#ffffff";
-    typingContainer.style.textShadow = "0 0 6px #ffffff";
-    typingContainer.style.display = "none";
-    typingContainer.style.whiteSpace = "pre";
+  await delay(700);
+  // go to cloud page
+  window.location.href = 'cloud.html';
+});
 
-    let line = 0, char = 0;
-    let isTyping = false;
-
-    function typeEffect() {
-      if (line < codeLines.length) {
-        if (char < codeLines[line].length) {
-          typingText.textContent += codeLines[line][char];
-          char++;
-          setTimeout(typeEffect, 15); // kecepatan mengetik
-        } else {
-          typingText.textContent += "\n"; // baris baru ke bawah
-          line++;
-          char = 0;
-          setTimeout(typeEffect, 100);
-        }
-      } else {
-        // Setelah selesai semua baris → ulang dari awal
-        setTimeout(() => {
-          typingText.textContent = "";
-          line = 0;
-          char = 0;
-          typeEffect();
-        }, 500);
-      }
-    }
-
-    // Jalankan setelah tombol ON ditekan
-    btn.addEventListener("click", () => {
-      setTimeout(() => {
-        typingContainer.style.display = "block";
-        if (!isTyping) {
-          isTyping = true;
-          typeEffect();
-        }
-      }, 2500);
-    });
-  </script>
+function delay(ms){ return new Promise(res=>setTimeout(res,ms)); }
+</script>
 </body>
 </html>
