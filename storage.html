@@ -1,0 +1,100 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>VCKSPTN | Cloud Access</title>
+
+  <style>
+    @import url('https://fonts.googleapis.com/css2?family=Orbitron:wght@600&display=swap');
+
+    body {
+      margin: 0;
+      padding: 0;
+      height: 100vh;
+      overflow: hidden;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      background: url('fantasy.png') no-repeat center center/cover;
+      font-family: 'Orbitron', sans-serif;
+      color: #00ffc8;
+    }
+
+    .overlay {
+      position: absolute;
+      inset: 0;
+      background: rgba(0, 0, 0, 0.55);
+      z-index: 1;
+    }
+
+    .container {
+      position: relative;
+      z-index: 2;
+      text-align: center;
+    }
+
+    .title {
+      font-size: 1.4em;
+      letter-spacing: 3px;
+      margin-bottom: 40px;
+      text-shadow: 0 0 10px #00fff0;
+    }
+
+    .neon-button {
+      width: 160px;
+      height: 160px;
+      border-radius: 50%;
+      background: radial-gradient(circle, #0f0 10%, #060 60%, transparent 100%);
+      box-shadow: 0 0 25px #0f0, 0 0 50px #0f0;
+      border: 3px solid #0f0;
+      cursor: pointer;
+      font-size: 1em;
+      color: #fff;
+      text-shadow: 0 0 10px #fff;
+      transition: transform 0.2s;
+      animation: colorShift 3s infinite;
+    }
+
+    .neon-button:hover {
+      transform: scale(1.1);
+    }
+
+    @keyframes colorShift {
+      0% {
+        border-color: #0f0;
+        box-shadow: 0 0 20px #0f0, 0 0 40px #0f0;
+        color: #0f0;
+      }
+      50% {
+        border-color: #f00;
+        box-shadow: 0 0 20px #f00, 0 0 40px #f00;
+        color: #f00;
+      }
+      100% {
+        border-color: #0f0;
+        box-shadow: 0 0 20px #0f0, 0 0 40px #0f0;
+        color: #0f0;
+      }
+    }
+  </style>
+</head>
+<body>
+  <div class="overlay"></div>
+  <div class="container">
+    <div class="title">VCKSPTN STORAGE ACCESS</div>
+    <button class="neon-button" onclick="openCloud()">OPEN</button>
+  </div>
+
+  <audio autoplay loop>
+    <source src="https://files.freemusicarchive.org/storage-freemusicarchive-org/music/ccCommunity/White_Bat_Audio/White_Bat_Audio_-_Future_City/White_Bat_Audio_-_Future_City.mp3" type="audio/mpeg">
+  </audio>
+
+  <script>
+    function openCloud() {
+      // Ganti URL di bawah ini dengan URL penyimpanan lo
+      window.location.href = "https://dfsjotpribiupxmsmdce.supabase.co/storage/v1/object/public/Vckspn/";
+    }
+  </script>
+</body>
+</html>
